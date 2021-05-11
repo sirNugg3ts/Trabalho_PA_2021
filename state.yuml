@@ -1,0 +1,9 @@
+// {type:state}
+// {generate:true}
+
+(start)->(AguardaInicio)
+(AguardaInicio)[Comeca]->(AguardaJogador)
+(AguardaJogador)[JogaPeca]->(AguardaJogador)
+(AguardaJogador)[Termina]->(FimJogo)
+(FimJogo)[Termina]->(end)
+(FimJogo)[Recomecar]->(AguardaInicio)
