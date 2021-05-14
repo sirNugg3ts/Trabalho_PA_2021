@@ -29,6 +29,10 @@ public class AguardaJogador extends EstadoAdapter{
         if (jogo.tabuleiroCheio())
             return new FimJogo(jogo);
 
+        if(jogo.getNRounds() == 4 || jogo.getNRounds() == 5){
+            return new AguardaMiniJogo(jogo);
+        }
+
         return new AguardaJogador(jogo);
     }
 

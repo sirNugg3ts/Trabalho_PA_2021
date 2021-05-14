@@ -1,7 +1,5 @@
 package pt.isec.a2018019825.jogo.logica.dados;
 
-import pt.isec.a2018019825.jogo.logica.estados.AguardaJogador;
-import pt.isec.a2018019825.jogo.logica.estados.IEstado;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -10,15 +8,13 @@ public class Jogo4EmLinha {
     private char[][] tabuleiro = new char[7][6];
     private int round;
 
-
-    private String nomeJogador1;
-    private String nomeJogador2;
-
-
+    private Jogador playerOne,playerTwo;
 
     private boolean nextPlayer; //jogador1 true /jogador 2 false
     private boolean winner;
     private boolean empate;
+
+    private MiniJogos minijogos;
 
     public Jogo4EmLinha() {}
 
@@ -26,13 +22,17 @@ public class Jogo4EmLinha {
         //esvaziar tabuleiro
         for (char[] chars : tabuleiro) Arrays.fill(chars, ' ');
 
-        nomeJogador1 = obtemNomeJogador(0);
-        nomeJogador2 = obtemNomeJogador(1);
+        playerOne = new Jogador(obtemNomeJogador(0));
+        playerTwo = new Jogador(obtemNomeJogador(1));
         nextPlayer = true;
         round = 0;
         empate = false;
 
+        minijogos = new MiniJogos();
+
     }
+
+    //normal methods
 
     private String obtemNomeJogador(int nJogador) {
         Scanner sc = new Scanner(System.in);
@@ -57,18 +57,21 @@ public class Jogo4EmLinha {
         round++;
     }
 
-    private void setPeca(char y, int coluna) {
-        int i = 0;
-        while (tabuleiro[coluna][i] != ' ')
-            i++;
-        tabuleiro[coluna][i] = y;
+    public boolean colunaCheia(int coluna){
+        if (tabuleiro[coluna][5] == ' ')
+            return false;
+        return true;
     }
 
+    public void skipsTurn(){nextPlayer = !nextPlayer;}
 
 
-    public void setWinner(boolean player){
-        this.winner = player;
-    }
+    //run minigames
+
+    public boolean startMathGame(){return minijogos.mathGame();}
+    public boolean startTypeRacer(){return minijogos.typeRacer();}
+
+
 
     //win checker
     public boolean verificaVencedor(char jogador) {
@@ -121,21 +124,52 @@ public class Jogo4EmLinha {
         return true;
     }
 
-    public boolean colunaCheia(int coluna){
-        if (tabuleiro[coluna][5] == ' ')
-            return false;
-        return true;
-    }
+
 
     //gets
 
     public String getNomeJogador1() {
-        return nomeJogador1;
+        return playerOne.getNome();
+    }
+
+    public String getWinnerName(){
+        if(empate)
+            return "empate";
+        if (winner)
+            return playerOne.getNome();
+        else
+            return playerTwo.getNome();
     }
 
     public String getNomeJogador2() {
-        return nomeJogador2;
+        return playerTwo.getNome();
     }
+
+    public int getNRounds() {
+        return round;
+    }
+
+    //sets
+
+    private void setPeca(char y, int coluna) {
+        int i = 0;
+        while (tabuleiro[coluna][i] != ' ')
+            i++;
+        tabuleiro[coluna][i] = y;
+    }
+
+    public void setWinner(boolean player){
+        this.winner = player;
+    }
+
+    public void addPecaDourada(boolean player){
+        if (player)
+            playerOne.setnPecasDouradas(playerOne.getnPecasDouradas()+1);
+        else
+            playerTwo.setnPecasDouradas(playerTwo.getnPecasDouradas()+1);
+    }
+
+    //boolean checkers
 
     public boolean isEmpate(){return empate;};
 
@@ -145,13 +179,8 @@ public class Jogo4EmLinha {
         return nextPlayer;
     }
 
-    public String getWinnerName(){
-        if(empate)
-            return "empate";
-        if (winner)
-            return nomeJogador1;
-        else
-            return nomeJogador2;
+    public boolean isTypeRacerEnabled(){
+        return minijogos.isTypeRacerEnabled();
     }
 
     //
@@ -174,5 +203,7 @@ public class Jogo4EmLinha {
 
         return sb.toString();
     }
+
+
 
 }

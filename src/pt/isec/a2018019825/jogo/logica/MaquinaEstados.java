@@ -2,6 +2,7 @@ package pt.isec.a2018019825.jogo.logica;
 
 import pt.isec.a2018019825.jogo.logica.dados.Jogo4EmLinha;
 import pt.isec.a2018019825.jogo.logica.estados.AguardaInicio;
+import pt.isec.a2018019825.jogo.logica.estados.AguardaJogador;
 import pt.isec.a2018019825.jogo.logica.estados.IEstado;
 
 public class MaquinaEstados {
@@ -9,25 +10,22 @@ public class MaquinaEstados {
     IEstado estadoAtual;
     Jogo4EmLinha jogo;
 
+    //construtor
     public MaquinaEstados(){
         jogo = new Jogo4EmLinha();
         estadoAtual = new AguardaInicio(jogo);
     }
 
+
+    //sets
     private void setEstadoAtual(IEstado estado){
         this.estadoAtual = estado;
     }
 
-    public String tabuleiroToString(){
-        return jogo.tabuleiroToString();
-    }
+    //gets
 
-    public void comeca(){
-        setEstadoAtual(estadoAtual.comeca());
-    }
-
-    public void jogaPeca(int coluna){
-        setEstadoAtual(estadoAtual.jogaPeca(coluna));
+    public int getRounds(){
+        return jogo.getNRounds();
     }
 
     public Situacao getSituacaoAtual(){
@@ -41,6 +39,42 @@ public class MaquinaEstados {
             return jogo.getWinnerName();
     }
 
+    public boolean nextPlayerOne(){
+        return jogo.vezJogador1();
+    }
+
+    public String getPlayerOneName(){
+        return jogo.getNomeJogador1();
+    }
+
+    public String getPlayerTwoName(){
+        return jogo.getNomeJogador2();
+    }
+
+
+    //transition methods
+
+    public void comeca(){
+        setEstadoAtual(estadoAtual.comeca());
+    }
+
+    public void jogaPeca(int coluna){
+        setEstadoAtual(estadoAtual.jogaPeca(coluna));
+
+    }
+
+    public void miniJogo(){
+        setEstadoAtual(estadoAtual.minijogo());
+    }
+
+    public void ignoraMiniJogo(){
+        setEstadoAtual(new AguardaJogador(jogo));
+    }
+
+    //toString Methods
+    public String tabuleiroToString(){
+        return jogo.tabuleiroToString();
+    }
 
     @Override
     public String toString(){
