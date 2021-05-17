@@ -8,20 +8,53 @@ public class Connect4IU {
     MaquinaEstados me;
     boolean sair;
 
-    public Connect4IU(MaquinaEstados me){
+    public Connect4IU(MaquinaEstados me) {
         this.me = me;
         sair = false;
     }
 
-    public void comeca(){
-        while(!sair){
+    public void comeca() {
+        while (!sair) {
             //menu here
             System.out.println(me);
             Situacao situacao = me.getSituacaoAtual();
             switch (situacao) {
-                case AGUARDA_INICIO -> comecaIU();
-                case AGUARDA_JOGADOR1, AGUARDA_JOGADOR2 -> aguardaJogadorIU();
-                case FIM_JOGO -> fimJogoIU();
+                case AGUARDA_INICIO:
+                    comecaIU();
+                    break;
+                case AGUARDA_JOGADOR1:
+                case AGUARDA_JOGADOR2:
+                    aguardaJogadorIU();
+                    break;
+                case AGUARDA_MINIJOGO:
+                    minijogoIU();
+                    break;
+                case FIM_JOGO:
+                    fimJogoIU();
+                    break;
+            }
+        }
+    }
+
+    private void minijogoIU() {
+        //me.nextPlayer -> True - Player 1
+        //              -> False - Player 2
+
+        if (me.nextPlayerOne()){
+            System.out.println(me.getPlayerOneName() + ", podes jogar um minijogo para ganhar uma peça dourada");
+            int op = Utils.escolheOpcao("Sim","Não");
+            if (op == 1){
+                me.miniJogo();
+            }else{
+                me.ignoraMiniJogo();
+            }
+        }else{
+            System.out.println(me.getPlayerTwoName() + ", podes jogar um minijogo para ganhar uma peça dourada\n Queres jogar?");
+            int op = Utils.escolheOpcao("Sim","Não");
+            if (op == 1){
+                me.miniJogo();
+            }else{
+                me.ignoraMiniJogo();
             }
         }
     }
@@ -39,8 +72,8 @@ public class Connect4IU {
             System.out.println(me.getWinner() + " é o vencedor da partida");
 
         System.out.println("Novo jogo?");
-        int op = Utils.escolheOpcao("Sim","Não");
-        switch (op){
+        int op = Utils.escolheOpcao("Sim", "Não");
+        switch (op) {
             case 1:
                 me.comeca();
                 break;
@@ -50,14 +83,14 @@ public class Connect4IU {
         }
     }
 
-    private void aguardaJogadorIU(){
-        int op = Utils.escolheOpcao("Jogar Peça","Sair");
+    private void aguardaJogadorIU() {
+        int op = Utils.escolheOpcao("Jogar Peça", "Sair");
         switch (op) {
             case 1:
-                int coluna ;
-                do{
+                int coluna;
+                do {
                     coluna = Utils.pedeInteiro("Indique a coluna: ");
-                }while (coluna < 0 || coluna > 7);
+                } while (coluna < 0 || coluna > 7);
                 me.jogaPeca(coluna);
                 break;
             default:

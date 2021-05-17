@@ -25,4 +25,8 @@ public abstract class EstadoAdapter implements IEstado{
         return this;
     }
 
+    @Override
+    public IEstado minijogo() {
+        return this;
+    }
 }
