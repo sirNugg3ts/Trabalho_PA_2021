@@ -1,7 +1,7 @@
 package pt.isec.a2018019825.jogo.logica.dados;
 
 public class Jogador {
-    private static int nBots = 0;
+    private static int nBots = 1;
     private String nome;
     private int nPecasDouradas;
     private boolean isBot;
@@ -27,6 +27,8 @@ public class Jogador {
     public boolean isBot() {
         return isBot;
     }
+
+    public static void resetBots(){nBots = 1;}
 
     public void setnPecasDouradas(int nPecasDouradas) {
         this.nPecasDouradas = nPecasDouradas;

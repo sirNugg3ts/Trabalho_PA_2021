@@ -61,7 +61,7 @@ public class MaquinaEstados {
 
     public void jogaPeca(int coluna){
             setEstadoAtual(estadoAtual.jogaPeca(coluna));
-        if ((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9))
+        if (((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9)) && !jogo.isNextPlayerBot())
             setEstadoAtual(new AguardaMiniJogo(jogo));
     }
 
@@ -77,6 +77,16 @@ public class MaquinaEstados {
             setEstadoAtual(new AguardaMiniJogo(jogo));
         setEstadoAtual(new AguardaJogador(jogo));
 
+    }
+
+    public boolean isNextPlayerBot(){
+        return jogo.isNextPlayerBot();
+    }
+
+    public void playBot(){
+        setEstadoAtual(jogo.playBot());
+        if (((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9)) && !jogo.isNextPlayerBot())
+            setEstadoAtual(new AguardaMiniJogo(jogo));
     }
 
     //toString Methods

@@ -17,6 +17,7 @@ public class Connect4IU {
         while (!sair) {
             //menu here
             System.out.println(me);
+            System.out.println(me.getRounds());
             Situacao situacao = me.getSituacaoAtual();
             switch (situacao) {
                 case AGUARDA_INICIO:
@@ -84,18 +85,25 @@ public class Connect4IU {
     }
 
     private void aguardaJogadorIU() {
-        int op = Utils.escolheOpcao("Jogar Peça", "Sair");
-        switch (op) {
-            case 1:
-                int coluna;
-                do {
-                    coluna = Utils.pedeInteiro("Indique a coluna: ");
-                } while (coluna < 0 || coluna > 7);
-                me.jogaPeca(coluna);
-                break;
-            default:
-                sair = true;
-                break;
+
+        if (me.isNextPlayerBot())
+            me.playBot();
+        else{
+            int op = Utils.escolheOpcao("Jogar Peça", "Sair");
+            switch (op) {
+                case 1:
+                    int coluna;
+                    do {
+                        coluna = Utils.pedeInteiro("Indique a coluna: ");
+                    } while (coluna < 0 || coluna > 7);
+                    me.jogaPeca(coluna);
+                    break;
+                default:
+                    sair = true;
+                    break;
+            }
         }
+
+
     }
 }
