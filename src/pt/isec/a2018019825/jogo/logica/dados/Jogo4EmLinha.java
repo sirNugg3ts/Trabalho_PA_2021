@@ -1,7 +1,13 @@
 package pt.isec.a2018019825.jogo.logica.dados;
 
 
+import pt.isec.a2018019825.jogo.Utils.Utils;
+import pt.isec.a2018019825.jogo.logica.estados.AguardaJogador;
+import pt.isec.a2018019825.jogo.logica.estados.FimJogo;
+import pt.isec.a2018019825.jogo.logica.estados.IEstado;
+
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Jogo4EmLinha {
@@ -21,9 +27,31 @@ public class Jogo4EmLinha {
     public void comeca() {
         //esvaziar tabuleiro
         for (char[] chars : tabuleiro) Arrays.fill(chars, ' ');
+        Jogador.resetBots();
 
-        playerOne = new Jogador(obtemNomeJogador(0));
-        playerTwo = new Jogador(obtemNomeJogador(1));
+        int nBots = -1;
+        do{
+            nBots = Utils.pedeInteiro("Indique quantos bots irão jogar (0 - 1 - 2):");
+            if (nBots<0 || nBots>2){
+                System.out.println("Valor inválido");
+            }
+        }while(nBots<0 || nBots>2);
+
+        switch (nBots){
+            case 0:
+                playerOne = new Jogador(obtemNomeJogador(0));
+                playerTwo = new Jogador(obtemNomeJogador(1));
+                break;
+            case 1:
+                playerOne = new Jogador(obtemNomeJogador(0));
+                playerTwo = new Jogador(true);
+                break;
+            case 2:
+                playerOne = new Jogador(true);
+                playerTwo = new Jogador(true);
+                break;
+        }
+
         nextPlayer = true;
         round = 0;
         empate = false;
@@ -76,6 +104,61 @@ public class Jogo4EmLinha {
             minijogos.setPlayerOneComplete(true);
         else
             minijogos.setPlayerTwoComplete(true);
+    }
+
+    public IEstado playBot(){
+        if (vezJogador1() && playerOne.isBot()){
+            //jogar
+            Random random = new Random();
+            int x;
+            do{
+                x = random.nextInt(6);
+            }while (colunaCheia(x));
+
+            colocaPeca(x);
+
+            //verificar proximo estado
+
+            if (verificaVencedor('Y')){ //player 1 ganhou
+                setWinner(true);
+                return new FimJogo(this);
+            }else if(verificaVencedor('R')){//player 2 ganhou
+                setWinner(false);
+                return new FimJogo(this);
+            }
+            if (tabuleiroCheio()) // ta cheio, e ninguem ganhou, logo empate
+                return new FimJogo(this);
+        }
+        else if(!vezJogador1() && playerTwo.isBot()){
+            //jogar
+
+            //jogar
+            Random random = new Random();
+            int x;
+            do{
+                x = random.nextInt(6);
+            }while (colunaCheia(x));
+
+            colocaPeca(x);
+
+            //verificar proximo estado
+
+            if (verificaVencedor('Y')){ //player 1 ganhou
+                setWinner(true);
+                return new FimJogo(this);
+            }else if(verificaVencedor('R')){//player 2 ganhou
+                setWinner(false);
+                return new FimJogo(this);
+            }
+
+            if (tabuleiroCheio()) // ta cheio, e ninguem ganhou, logo empate
+                return new FimJogo(this);
+        }
+        else{
+            System.err.println("Not supposed to happen, bad programming");
+            return null;
+        }
+        return new AguardaJogador(this);
     }
 
 
@@ -204,6 +287,14 @@ public class Jogo4EmLinha {
     public boolean isTypeRacerEnabled(){return minijogos.isTypeRacerEnabled();}
     public boolean isPlayerOneComplete(){return minijogos.isPlayerOneComplete();}
     public boolean isPlayerTwoComplete(){return minijogos.isPlayerTwoComplete();}
+    public boolean isNextPlayerBot(){
+        if (vezJogador1() && playerOne.isBot())
+            return true;
+        else if (!vezJogador1() && playerTwo.isBot())
+            return true;
+        else
+            return false;
+    }
 
     //
 

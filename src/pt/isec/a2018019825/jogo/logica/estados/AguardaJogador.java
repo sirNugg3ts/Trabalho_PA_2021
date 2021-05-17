@@ -31,11 +31,12 @@ public class AguardaJogador extends EstadoAdapter{
         if (jogo.tabuleiroCheio()) // ta cheio, e ninguem ganhou, logo empate
             return new FimJogo(jogo);
 
-       /* if(jogo.getNRounds() == 8 || jogo.getNRounds() == 9){ // verificar se esta na altura de minijogo
-            return new AguardaMiniJogo(jogo);
-        }*/
-
         //se ninguem ganhou nem esta em empate nem é para ir a minijogo, próxima ronda
+
+
+
+
+
         return new AguardaJogador(jogo);
     }
 

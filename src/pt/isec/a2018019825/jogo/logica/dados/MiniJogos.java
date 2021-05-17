@@ -53,7 +53,7 @@ public class MiniJogos {
         long start = System.currentTimeMillis();
         int acertados = 0;
 
-        while (System.currentTimeMillis() - start < 30000) {
+        while (System.currentTimeMillis() - start < 30000 && acertados < 5) {
             int n1 = 1;// (int) ((Math.random() * 20) + 1);
             int n2 =1 ;// (int) ((Math.random() * 20) + 1);
 
@@ -69,7 +69,7 @@ public class MiniJogos {
                         if (System.currentTimeMillis() - start < 30000)
                             acertados++;
                         else
-                            System.out.println("Já passaram os 30 segundos!");
+                            System.out.println("Já passaram os 30 segundos! Esta resposta não foi contada");
                     } else
                         System.out.println("Errado");
                     break;
@@ -109,7 +109,10 @@ public class MiniJogos {
 
             }
         }
-        System.out.println("Tempo terminou");
+        if (System.currentTimeMillis() - start >= 30000)
+            System.out.println("Tempo terminou");
+        if (acertados>4)
+            System.out.println("Venceste o minijogo!!");
         return acertados > 4;
     }
 
