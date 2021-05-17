@@ -8,6 +8,7 @@ public interface IEstado {
     IEstado jogaPeca(int coluna);
     IEstado termina();
     IEstado minijogo();
+    IEstado jogaPecaDourada(int coluna);
 
     Situacao getSituacaoAtual();
 }

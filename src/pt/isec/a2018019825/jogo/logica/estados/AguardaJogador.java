@@ -9,6 +9,12 @@ public class AguardaJogador extends EstadoAdapter{
     }
 
     @Override
+    public IEstado jogaPecaDourada(int coluna) {
+        jogo.limpaColuna(coluna);
+        return new AguardaJogador(jogo);
+    }
+
+    @Override
     public IEstado jogaPeca(int coluna) {
 
         if (jogo.colunaCheia(coluna)){
@@ -32,9 +38,6 @@ public class AguardaJogador extends EstadoAdapter{
             return new FimJogo(jogo);
 
         //se ninguem ganhou nem esta em empate nem é para ir a minijogo, próxima ronda
-
-
-
 
 
         return new AguardaJogador(jogo);

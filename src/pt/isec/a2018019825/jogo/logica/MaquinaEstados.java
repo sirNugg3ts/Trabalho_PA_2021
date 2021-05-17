@@ -52,6 +52,13 @@ public class MaquinaEstados {
         return jogo.getNomeJogador2();
     }
 
+    public int getNPecasDouradas(boolean player){
+        if (player)
+            return jogo.getPecasDouradasPlayerOne();
+        else
+            return jogo.getPecasDouradasPlayerTwo();
+    }
+
 
     //transition methods
 
@@ -63,6 +70,10 @@ public class MaquinaEstados {
             setEstadoAtual(estadoAtual.jogaPeca(coluna));
         if (((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9)) && !jogo.isNextPlayerBot())
             setEstadoAtual(new AguardaMiniJogo(jogo));
+    }
+
+    public void jogaPecaDourada(int coluna){
+        setEstadoAtual(estadoAtual.jogaPecaDourada(coluna));
     }
 
     public void miniJogo(){

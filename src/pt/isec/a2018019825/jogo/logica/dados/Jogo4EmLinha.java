@@ -75,6 +75,24 @@ public class Jogo4EmLinha {
         return name;
     }
 
+    public void limpaColuna(int coluna) {
+        for (int i = 0;i < tabuleiro[coluna].length;i++)
+            tabuleiro[coluna][i] = ' ';
+        if (nextPlayer)
+            playerOne.setnPecasDouradas(getPecasDouradasPlayerOne()-1);
+        else
+            playerTwo.setnPecasDouradas(getPecasDouradasPlayerTwo()-1);
+        nextPlayer = !nextPlayer;
+
+        if (round > 9) { // reset as rondas, para comecar a contar de novo para minijogo
+            round = 1;
+            minijogos.setPlayerOneComplete(false);
+            minijogos.setPlayerTwoComplete(false);
+        }
+        else
+            round++;
+    }
+
     public void colocaPeca(int coluna) {
         if (vezJogador1())
             setPeca('Y', coluna);
@@ -316,10 +334,6 @@ public class Jogo4EmLinha {
 
         return sb.toString();
     }
-
-
-
-
 
 
 

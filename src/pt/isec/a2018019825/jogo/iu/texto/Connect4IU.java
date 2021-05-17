@@ -89,19 +89,47 @@ public class Connect4IU {
         if (me.isNextPlayerBot())
             me.playBot();
         else{
-            int op = Utils.escolheOpcao("Jogar Peça", "Sair");
-            switch (op) {
-                case 1:
-                    int coluna;
-                    do {
-                        coluna = Utils.pedeInteiro("Indique a coluna: ");
-                    } while (coluna < 0 || coluna > 7);
-                    me.jogaPeca(coluna);
-                    break;
-                default:
-                    sair = true;
-                    break;
+            int op;
+            if (me.getNPecasDouradas(me.nextPlayerOne()) > 0){
+                op = Utils.escolheOpcao("Jogar Peça Normal","Jogar Peça Dourada", "Sair");
+                switch (op) {
+                    case 1:{
+                        int coluna;
+                        do {
+                            coluna = Utils.pedeInteiro("Indique a coluna: ");
+                        } while (coluna < 0 || coluna > 7);
+                        me.jogaPeca(coluna);
+                        break;}
+                    case 2:
+                        int coluna;
+                        do {
+                            coluna = Utils.pedeInteiro("Indique a coluna: ");
+                        } while (coluna < 0 || coluna > 7);
+                        me.jogaPecaDourada(coluna);
+                        break;
+                    case 0:
+                        sair = true;
+                        break;
+                }
             }
+            else{
+                op = Utils.escolheOpcao("Jogar Peça Normal", "Sair");
+                switch (op) {
+                    case 1:{
+                        int coluna;
+                        do {
+                            coluna = Utils.pedeInteiro("Indique a coluna: ");
+                        } while (coluna < 0 || coluna > 7);
+                        me.jogaPeca(coluna);
+                        break;}
+                    case 0:
+                        sair = true;
+                        break;
+                }
+            }
+
+
+
         }
 
 

@@ -54,8 +54,8 @@ public class MiniJogos {
         int acertados = 0;
 
         while (System.currentTimeMillis() - start < 30000 && acertados < 5) {
-            int n1 = 1;// (int) ((Math.random() * 20) + 1);
-            int n2 =1 ;// (int) ((Math.random() * 20) + 1);
+            int n1 = (int) ((Math.random() * 10) + 1);
+            int n2 = (int) ((Math.random() * 10) + 1);
 
             int op = (int) (Math.random() * 4);
 

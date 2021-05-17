@@ -29,4 +29,9 @@ public abstract class EstadoAdapter implements IEstado{
     public IEstado minijogo() {
         return this;
     }
+
+    @Override
+    public IEstado jogaPecaDourada(int coluna) {
+        return this;
+    }
 }
