@@ -54,7 +54,13 @@ public class Jogo4EmLinha {
             setPeca('R', coluna);
 
         nextPlayer = !nextPlayer;
-        round++;
+        if (round > 9) { // reset as rondas, para comecar a contar de novo para minijogo
+            round = 1;
+            minijogos.setPlayerOneComplete(false);
+            minijogos.setPlayerTwoComplete(false);
+        }
+        else
+            round++;
     }
 
     public boolean colunaCheia(int coluna){
@@ -63,7 +69,15 @@ public class Jogo4EmLinha {
         return true;
     }
 
-    public void skipsTurn(){nextPlayer = !nextPlayer;}
+    public void skipsTurn(){nextPlayer = !nextPlayer;round++;}
+
+    public void completeMiniGame(boolean jogador){
+        if (jogador)
+            minijogos.setPlayerOneComplete(true);
+        else
+            minijogos.setPlayerTwoComplete(true);
+    }
+
 
 
     //run minigames
@@ -149,6 +163,14 @@ public class Jogo4EmLinha {
         return round;
     }
 
+    public int getPecasDouradasPlayerOne(){
+        return playerOne.getnPecasDouradas();
+    }
+
+    public int getPecasDouradasPlayerTwo(){
+        return playerTwo.getnPecasDouradas();
+    }
+
     //sets
 
     private void setPeca(char y, int coluna) {
@@ -179,9 +201,9 @@ public class Jogo4EmLinha {
         return nextPlayer;
     }
 
-    public boolean isTypeRacerEnabled(){
-        return minijogos.isTypeRacerEnabled();
-    }
+    public boolean isTypeRacerEnabled(){return minijogos.isTypeRacerEnabled();}
+    public boolean isPlayerOneComplete(){return minijogos.isPlayerOneComplete();}
+    public boolean isPlayerTwoComplete(){return minijogos.isPlayerTwoComplete();}
 
     //
 
@@ -203,6 +225,10 @@ public class Jogo4EmLinha {
 
         return sb.toString();
     }
+
+
+
+
 
 
 

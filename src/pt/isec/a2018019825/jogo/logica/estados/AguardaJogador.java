@@ -10,6 +10,7 @@ public class AguardaJogador extends EstadoAdapter{
 
     @Override
     public IEstado jogaPeca(int coluna) {
+
         if (jogo.colunaCheia(coluna)){
             System.out.println("Coluna Cheia!");
             return this;
@@ -17,22 +18,24 @@ public class AguardaJogador extends EstadoAdapter{
 
         jogo.colocaPeca(coluna);
 
-        //TODO: Verificar estado do tabuleiro
-        if (jogo.verificaVencedor('Y')){
+        //verificar proximo estado
+
+        if (jogo.verificaVencedor('Y')){ //player 1 ganhou
             jogo.setWinner(true);
             return new FimJogo(jogo);
-        }else if(jogo.verificaVencedor('R')){
+        }else if(jogo.verificaVencedor('R')){//player 2 ganhou
             jogo.setWinner(false);
             return new FimJogo(jogo);
         }
 
-        if (jogo.tabuleiroCheio())
+        if (jogo.tabuleiroCheio()) // ta cheio, e ninguem ganhou, logo empate
             return new FimJogo(jogo);
 
-        if(jogo.getNRounds() == 4 || jogo.getNRounds() == 5){
+       /* if(jogo.getNRounds() == 8 || jogo.getNRounds() == 9){ // verificar se esta na altura de minijogo
             return new AguardaMiniJogo(jogo);
-        }
+        }*/
 
+        //se ninguem ganhou nem esta em empate nem é para ir a minijogo, próxima ronda
         return new AguardaJogador(jogo);
     }
 

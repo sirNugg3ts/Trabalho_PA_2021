@@ -3,6 +3,7 @@ package pt.isec.a2018019825.jogo.logica;
 import pt.isec.a2018019825.jogo.logica.dados.Jogo4EmLinha;
 import pt.isec.a2018019825.jogo.logica.estados.AguardaInicio;
 import pt.isec.a2018019825.jogo.logica.estados.AguardaJogador;
+import pt.isec.a2018019825.jogo.logica.estados.AguardaMiniJogo;
 import pt.isec.a2018019825.jogo.logica.estados.IEstado;
 
 public class MaquinaEstados {
@@ -59,16 +60,23 @@ public class MaquinaEstados {
     }
 
     public void jogaPeca(int coluna){
-        setEstadoAtual(estadoAtual.jogaPeca(coluna));
-
+            setEstadoAtual(estadoAtual.jogaPeca(coluna));
+        if ((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9))
+            setEstadoAtual(new AguardaMiniJogo(jogo));
     }
 
     public void miniJogo(){
         setEstadoAtual(estadoAtual.minijogo());
+        if ((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9))
+            setEstadoAtual(new AguardaMiniJogo(jogo));
     }
 
     public void ignoraMiniJogo(){
+        jogo.completeMiniGame(jogo.vezJogador1());
+        if ((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9))
+            setEstadoAtual(new AguardaMiniJogo(jogo));
         setEstadoAtual(new AguardaJogador(jogo));
+
     }
 
     //toString Methods
@@ -85,11 +93,13 @@ public class MaquinaEstados {
                 break;
             case AGUARDA_JOGADOR1:
                 sb.append(jogo.tabuleiroToString()+"\n");
-                sb.append(jogo.getNomeJogador1() + ", é a tua vez de jogar!");
+                sb.append(jogo.getNomeJogador1() + ", é a tua vez de jogar!\n");
+                sb.append("Peças douradas: " + jogo.getPecasDouradasPlayerOne());
                 break;
             case AGUARDA_JOGADOR2:
                 sb.append(jogo.tabuleiroToString()+"\n");
                 sb.append(jogo.getNomeJogador2() + ", é a tua vez de jogar!\n");
+                sb.append("Peças Douradas: " + jogo.getPecasDouradasPlayerTwo());
                 break;
             case FIM_JOGO:
                 sb.append("Fim do jogo\n");

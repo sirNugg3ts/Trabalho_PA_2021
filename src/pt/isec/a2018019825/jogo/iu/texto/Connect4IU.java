@@ -28,6 +28,7 @@ public class Connect4IU {
                     break;
                 case AGUARDA_MINIJOGO:
                     minijogoIU();
+                    break;
                 case FIM_JOGO:
                     fimJogoIU();
                     break;
@@ -48,7 +49,7 @@ public class Connect4IU {
                 me.ignoraMiniJogo();
             }
         }else{
-            System.out.println(me.getPlayerTwoName() + ", podes jogar um minijogo para ganhar uma peça dourada");
+            System.out.println(me.getPlayerTwoName() + ", podes jogar um minijogo para ganhar uma peça dourada\n Queres jogar?");
             int op = Utils.escolheOpcao("Sim","Não");
             if (op == 1){
                 me.miniJogo();

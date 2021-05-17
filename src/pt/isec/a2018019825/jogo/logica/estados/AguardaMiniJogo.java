@@ -18,19 +18,21 @@ public class AguardaMiniJogo extends EstadoAdapter{
 
         boolean win;
 
-        if (jogo.isTypeRacerEnabled()){
-            boolean x = random.nextBoolean();
+        if (jogo.isTypeRacerEnabled()){ //verificar se o jogo funciona
+            boolean x = random.nextBoolean(); //escolher um dos dois jogos ao calhas
             if (x)
                 win = jogo.startMathGame();
             else
                 win = jogo.startTypeRacer();
-        }else
+        }else // se o typeracer nao funcionar, calha sempre o jogo da matematica
             win = jogo.startMathGame();
 
         if (win)
-            jogo.addPecaDourada(jogo.vezJogador1());
+            jogo.addPecaDourada(jogo.vezJogador1()); //ganha a peça dourada e pode jogar
         else
-            jogo.skipsTurn();
+            jogo.skipsTurn(); //perdeu, logo nao ganha a ronda e passa a vez para o proximo jogador
+
+        jogo.completeMiniGame(jogo.vezJogador1());
 
         return new AguardaJogador(jogo);
 

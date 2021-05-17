@@ -13,11 +13,16 @@ public class MiniJogos {
 
     private boolean typeRacerEnabled;
 
+    private boolean playerOneComplete,playerTwoComplete;
+
+
     private ArrayList<String> listaPalavras;
     private int palavrasLidas;
 
     public MiniJogos() {
         palavrasLidas = 0;
+        playerOneComplete = false;
+        playerTwoComplete = false;
 
         File ficheiroTypeRacer = new File("typeracer.txt");
         if (!ficheiroTypeRacer.canRead()) {
@@ -49,8 +54,8 @@ public class MiniJogos {
         int acertados = 0;
 
         while (System.currentTimeMillis() - start < 30000) {
-            int n1 = (int) ((Math.random() * 20) + 1);
-            int n2 = (int) ((Math.random() * 20) + 1);
+            int n1 = 1;// (int) ((Math.random() * 20) + 1);
+            int n2 =1 ;// (int) ((Math.random() * 20) + 1);
 
             int op = (int) (Math.random() * 4);
 
@@ -149,4 +154,19 @@ public class MiniJogos {
         return typeRacerEnabled;
     }
 
+    public boolean isPlayerOneComplete() {
+        return playerOneComplete;
+    }
+
+    public void setPlayerOneComplete(boolean playerOneComplete) {
+        this.playerOneComplete = playerOneComplete;
+    }
+
+    public boolean isPlayerTwoComplete() {
+        return playerTwoComplete;
+    }
+
+    public void setPlayerTwoComplete(boolean playerTwoComplete) {
+        this.playerTwoComplete = playerTwoComplete;
+    }
 }
