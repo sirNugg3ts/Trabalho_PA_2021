@@ -12,47 +12,47 @@ public class MaquinaEstados {
     Jogo4EmLinha jogo;
 
     //construtor
-    public MaquinaEstados(){
+    public MaquinaEstados() {
         jogo = new Jogo4EmLinha();
         estadoAtual = new AguardaInicio(jogo);
     }
 
 
     //sets
-    private void setEstadoAtual(IEstado estado){
+    private void setEstadoAtual(IEstado estado) {
         this.estadoAtual = estado;
     }
 
     //gets
 
-    public int getRounds(){
+    public int getRounds() {
         return jogo.getNRounds();
     }
 
-    public Situacao getSituacaoAtual(){
+    public Situacao getSituacaoAtual() {
         return estadoAtual.getSituacaoAtual();
     }
 
-    public String getWinner(){
-        if(jogo.isEmpate())
+    public String getWinner() {
+        if (jogo.isEmpate())
             return "Empate";
         else
             return jogo.getWinnerName();
     }
 
-    public boolean nextPlayerOne(){
+    public boolean nextPlayerOne() {
         return jogo.vezJogador1();
     }
 
-    public String getPlayerOneName(){
+    public String getPlayerOneName() {
         return jogo.getNomeJogador1();
     }
 
-    public String getPlayerTwoName(){
+    public String getPlayerTwoName() {
         return jogo.getNomeJogador2();
     }
 
-    public int getNPecasDouradas(boolean player){
+    public int getNPecasDouradas(boolean player) {
         if (player)
             return jogo.getPecasDouradasPlayerOne();
         else
@@ -62,27 +62,25 @@ public class MaquinaEstados {
 
     //transition methods
 
-    public void comeca(){
+    public void comeca() {
         setEstadoAtual(estadoAtual.comeca());
     }
 
-    public void jogaPeca(int coluna){
-            setEstadoAtual(estadoAtual.jogaPeca(coluna));
-        if (((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9)) && !jogo.isNextPlayerBot())
-            setEstadoAtual(new AguardaMiniJogo(jogo));
+    public void jogaPeca(int coluna) {
+        setEstadoAtual(estadoAtual.jogaPeca(coluna));
     }
 
-    public void jogaPecaDourada(int coluna){
+    public void jogaPecaDourada(int coluna) {
         setEstadoAtual(estadoAtual.jogaPecaDourada(coluna));
     }
 
-    public void miniJogo(){
+    public void miniJogo() {
         setEstadoAtual(estadoAtual.minijogo());
         if ((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9))
             setEstadoAtual(new AguardaMiniJogo(jogo));
     }
 
-    public void ignoraMiniJogo(){
+    public void ignoraMiniJogo() {
         jogo.completeMiniGame(jogo.vezJogador1());
         if ((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9))
             setEstadoAtual(new AguardaMiniJogo(jogo));
@@ -90,35 +88,34 @@ public class MaquinaEstados {
 
     }
 
-    public boolean isNextPlayerBot(){
+    public boolean isNextPlayerBot() {
         return jogo.isNextPlayerBot();
     }
 
-    public void playBot(){
-        setEstadoAtual(jogo.playBot());
-        if (((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9)) && !jogo.isNextPlayerBot())
-            setEstadoAtual(new AguardaMiniJogo(jogo));
+    public void playBot() {
+        setEstadoAtual(estadoAtual.playBot());
+
     }
 
     //toString Methods
-    public String tabuleiroToString(){
+    public String tabuleiroToString() {
         return jogo.tabuleiroToString();
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder();
-        switch (estadoAtual.getSituacaoAtual()){
+        switch (estadoAtual.getSituacaoAtual()) {
             case AGUARDA_INICIO:
                 sb.append("Início de um novo jogo");
                 break;
             case AGUARDA_JOGADOR1:
-                sb.append(jogo.tabuleiroToString()+"\n");
+                sb.append(jogo.tabuleiroToString() + "\n");
                 sb.append(jogo.getNomeJogador1() + ", é a tua vez de jogar!\n");
                 sb.append("Peças douradas: " + jogo.getPecasDouradasPlayerOne());
                 break;
             case AGUARDA_JOGADOR2:
-                sb.append(jogo.tabuleiroToString()+"\n");
+                sb.append(jogo.tabuleiroToString() + "\n");
                 sb.append(jogo.getNomeJogador2() + ", é a tua vez de jogar!\n");
                 sb.append("Peças Douradas: " + jogo.getPecasDouradasPlayerTwo());
                 break;

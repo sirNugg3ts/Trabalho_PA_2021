@@ -2,16 +2,18 @@ package pt.isec.a2018019825.jogo.logica.dados;
 
 public class Jogador {
     private static int nBots = 1;
-    private String nome;
+    private final String nome;
     private int nPecasDouradas;
     private boolean isBot;
+    private int creditos;
 
-    public Jogador(String name){
+    public Jogador(String name) {
         nome = name;
         nPecasDouradas = 0;
+        creditos = 5;
     }
 
-    public Jogador(Boolean isBot){
+    public Jogador(Boolean isBot) {
         this.isBot = true;
         nome = "Bot" + nBots++;
     }
@@ -28,13 +30,11 @@ public class Jogador {
         return isBot;
     }
 
-    public static void resetBots(){nBots = 1;}
+    public static void resetBots() {
+        nBots = 1;
+    }
 
     public void setnPecasDouradas(int nPecasDouradas) {
         this.nPecasDouradas = nPecasDouradas;
-    }
-
-    public void setBot(boolean bot) {
-        isBot = bot;
     }
 }

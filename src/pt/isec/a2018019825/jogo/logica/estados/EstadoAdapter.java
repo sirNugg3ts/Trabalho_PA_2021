@@ -2,7 +2,7 @@ package pt.isec.a2018019825.jogo.logica.estados;
 
 import pt.isec.a2018019825.jogo.logica.dados.Jogo4EmLinha;
 
-public abstract class EstadoAdapter implements IEstado{
+public abstract class EstadoAdapter implements IEstado {
 
     protected Jogo4EmLinha jogo;
 
@@ -32,6 +32,11 @@ public abstract class EstadoAdapter implements IEstado{
 
     @Override
     public IEstado jogaPecaDourada(int coluna) {
+        return this;
+    }
+
+    @Override
+    public IEstado playBot() {
         return this;
     }
 }

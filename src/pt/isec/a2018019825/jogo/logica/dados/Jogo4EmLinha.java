@@ -2,19 +2,15 @@ package pt.isec.a2018019825.jogo.logica.dados;
 
 
 import pt.isec.a2018019825.jogo.Utils.Utils;
-import pt.isec.a2018019825.jogo.logica.estados.AguardaJogador;
-import pt.isec.a2018019825.jogo.logica.estados.FimJogo;
-import pt.isec.a2018019825.jogo.logica.estados.IEstado;
 
 import java.util.Arrays;
-import java.util.Random;
 import java.util.Scanner;
 
 public class Jogo4EmLinha {
-    private char[][] tabuleiro = new char[7][6];
+    private final char[][] tabuleiro = new char[7][6];
     private int round;
 
-    private Jogador playerOne,playerTwo;
+    private Jogador playerOne, playerTwo;
 
     private boolean nextPlayer; //jogador1 true /jogador 2 false
     private boolean winner;
@@ -22,22 +18,25 @@ public class Jogo4EmLinha {
 
     private MiniJogos minijogos;
 
-    public Jogo4EmLinha() {}
+    //construtor e iniciador
+
+    public Jogo4EmLinha() {
+    }
 
     public void comeca() {
         //esvaziar tabuleiro
         for (char[] chars : tabuleiro) Arrays.fill(chars, ' ');
         Jogador.resetBots();
 
-        int nBots = -1;
-        do{
+        int nBots;
+        do {
             nBots = Utils.pedeInteiro("Indique quantos bots irão jogar (0 - 1 - 2):");
-            if (nBots<0 || nBots>2){
+            if (nBots < 0 || nBots > 2) {
                 System.out.println("Valor inválido");
             }
-        }while(nBots<0 || nBots>2);
+        } while (nBots < 0 || nBots > 2);
 
-        switch (nBots){
+        switch (nBots) {
             case 0:
                 playerOne = new Jogador(obtemNomeJogador(0));
                 playerTwo = new Jogador(obtemNomeJogador(1));
@@ -57,7 +56,6 @@ public class Jogo4EmLinha {
         empate = false;
 
         minijogos = new MiniJogos();
-
     }
 
     //normal methods
@@ -76,20 +74,18 @@ public class Jogo4EmLinha {
     }
 
     public void limpaColuna(int coluna) {
-        for (int i = 0;i < tabuleiro[coluna].length;i++)
-            tabuleiro[coluna][i] = ' ';
+        Arrays.fill(tabuleiro[coluna], ' ');
         if (nextPlayer)
-            playerOne.setnPecasDouradas(getPecasDouradasPlayerOne()-1);
+            playerOne.setnPecasDouradas(getPecasDouradasPlayerOne() - 1);
         else
-            playerTwo.setnPecasDouradas(getPecasDouradasPlayerTwo()-1);
+            playerTwo.setnPecasDouradas(getPecasDouradasPlayerTwo() - 1);
         nextPlayer = !nextPlayer;
 
         if (round > 9) { // reset as rondas, para comecar a contar de novo para minijogo
             round = 1;
             minijogos.setPlayerOneComplete(false);
             minijogos.setPlayerTwoComplete(false);
-        }
-        else
+        } else
             round++;
     }
 
@@ -104,88 +100,29 @@ public class Jogo4EmLinha {
             round = 1;
             minijogos.setPlayerOneComplete(false);
             minijogos.setPlayerTwoComplete(false);
-        }
-        else
+        } else
             round++;
     }
 
-    public boolean colunaCheia(int coluna){
-        if (tabuleiro[coluna][5] == ' ')
-            return false;
-        return true;
+    public boolean colunaCheia(int coluna) {
+        return tabuleiro[coluna][5] != ' ';
     }
 
-    public void skipsTurn(){nextPlayer = !nextPlayer;round++;}
-
-    public void completeMiniGame(boolean jogador){
-        if (jogador)
-            minijogos.setPlayerOneComplete(true);
-        else
-            minijogos.setPlayerTwoComplete(true);
+    public void skipsTurn() {
+        nextPlayer = !nextPlayer;
+        round++;
     }
-
-    public IEstado playBot(){
-        if (vezJogador1() && playerOne.isBot()){
-            //jogar
-            Random random = new Random();
-            int x;
-            do{
-                x = random.nextInt(6);
-            }while (colunaCheia(x));
-
-            colocaPeca(x);
-
-            //verificar proximo estado
-
-            if (verificaVencedor('Y')){ //player 1 ganhou
-                setWinner(true);
-                return new FimJogo(this);
-            }else if(verificaVencedor('R')){//player 2 ganhou
-                setWinner(false);
-                return new FimJogo(this);
-            }
-            if (tabuleiroCheio()) // ta cheio, e ninguem ganhou, logo empate
-                return new FimJogo(this);
-        }
-        else if(!vezJogador1() && playerTwo.isBot()){
-            //jogar
-
-            //jogar
-            Random random = new Random();
-            int x;
-            do{
-                x = random.nextInt(6);
-            }while (colunaCheia(x));
-
-            colocaPeca(x);
-
-            //verificar proximo estado
-
-            if (verificaVencedor('Y')){ //player 1 ganhou
-                setWinner(true);
-                return new FimJogo(this);
-            }else if(verificaVencedor('R')){//player 2 ganhou
-                setWinner(false);
-                return new FimJogo(this);
-            }
-
-            if (tabuleiroCheio()) // ta cheio, e ninguem ganhou, logo empate
-                return new FimJogo(this);
-        }
-        else{
-            System.err.println("Not supposed to happen, bad programming");
-            return null;
-        }
-        return new AguardaJogador(this);
-    }
-
 
 
     //run minigames
 
-    public boolean startMathGame(){return minijogos.mathGame();}
-    public boolean startTypeRacer(){return minijogos.typeRacer();}
+    public boolean startMathGame() {
+        return minijogos.mathGame();
+    }
 
+    public boolean startTypeRacer() {
+        return minijogos.typeRacer();
+    }
 
 
     //win checker
@@ -240,15 +177,14 @@ public class Jogo4EmLinha {
     }
 
 
-
     //gets
 
     public String getNomeJogador1() {
         return playerOne.getNome();
     }
 
-    public String getWinnerName(){
-        if(empate)
+    public String getWinnerName() {
+        if (empate)
             return "empate";
         if (winner)
             return playerOne.getNome();
@@ -264,11 +200,11 @@ public class Jogo4EmLinha {
         return round;
     }
 
-    public int getPecasDouradasPlayerOne(){
+    public int getPecasDouradasPlayerOne() {
         return playerOne.getnPecasDouradas();
     }
 
-    public int getPecasDouradasPlayerTwo(){
+    public int getPecasDouradasPlayerTwo() {
         return playerTwo.getnPecasDouradas();
     }
 
@@ -281,20 +217,30 @@ public class Jogo4EmLinha {
         tabuleiro[coluna][i] = y;
     }
 
-    public void setWinner(boolean player){
+    public void setWinner(boolean player) {
         this.winner = player;
     }
 
-    public void addPecaDourada(boolean player){
+    public void addPecaDourada(boolean player) {
         if (player)
-            playerOne.setnPecasDouradas(playerOne.getnPecasDouradas()+1);
+            playerOne.setnPecasDouradas(playerOne.getnPecasDouradas() + 1);
         else
-            playerTwo.setnPecasDouradas(playerTwo.getnPecasDouradas()+1);
+            playerTwo.setnPecasDouradas(playerTwo.getnPecasDouradas() + 1);
     }
+
+    public void completeMiniGame(boolean jogador) {
+        if (jogador)
+            minijogos.setPlayerOneComplete(true);
+        else
+            minijogos.setPlayerTwoComplete(true);
+    }
+
 
     //boolean checkers
 
-    public boolean isEmpate(){return empate;};
+    public boolean isEmpate() {
+        return empate;
+    }
 
     public boolean vezJogador1() {
         //devolve true para jogador1
@@ -302,26 +248,33 @@ public class Jogo4EmLinha {
         return nextPlayer;
     }
 
-    public boolean isTypeRacerEnabled(){return minijogos.isTypeRacerEnabled();}
-    public boolean isPlayerOneComplete(){return minijogos.isPlayerOneComplete();}
-    public boolean isPlayerTwoComplete(){return minijogos.isPlayerTwoComplete();}
-    public boolean isNextPlayerBot(){
-        if (vezJogador1() && playerOne.isBot())
-            return true;
-        else if (!vezJogador1() && playerTwo.isBot())
-            return true;
-        else
-            return false;
+    public boolean isTypeRacerEnabled() {
+        return minijogos.isTypeRacerEnabled();
     }
 
-    //
+    public boolean isPlayerOneComplete() {
+        return minijogos.isPlayerOneComplete();
+    }
 
-    public String tabuleiroToString(){
+    public boolean isPlayerTwoComplete() {
+        return minijogos.isPlayerTwoComplete();
+    }
+
+    public boolean isNextPlayerBot() {
+        if (vezJogador1() && playerOne.isBot())
+            return true;
+        else return !vezJogador1() && playerTwo.isBot();
+    }
+
+
+    //toString
+
+    public String tabuleiroToString() {
         StringBuilder sb = new StringBuilder();
         sb.append("---------------\n");
-       for (int j=tabuleiro[0].length-1;j>=0;j--){
+        for (int j = tabuleiro[0].length - 1; j >= 0; j--) {
             sb.append("|");
-            for (int i=0;i < tabuleiro.length;i++){
+            for (int i = 0; i < tabuleiro.length; i++) {
                 sb.append(tabuleiro[i][j]);
                 sb.append("|");
             }
@@ -334,7 +287,5 @@ public class Jogo4EmLinha {
 
         return sb.toString();
     }
-
-
 
 }

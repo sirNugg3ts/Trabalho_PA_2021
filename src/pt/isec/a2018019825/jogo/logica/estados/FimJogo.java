@@ -12,20 +12,18 @@ public class FimJogo extends EstadoAdapter {
 
     @Override
     public IEstado termina() {
-         if (jogo.tabuleiroCheio()){
-             System.out.println("Empate");
-         }else{
-             System.out.println(jogo.getWinnerName() + "Venceu a partida");
-         }
+        if (jogo.tabuleiroCheio()) {
+            System.out.println("Empate");
+        } else {
+            System.out.println(jogo.getWinnerName() + "Venceu a partida");
+        }
 
         System.out.println("Deseja iniciar um novo jogo?");
-         int op = Utils.escolheOpcao("Sim","Não");
-         switch (op){
-             case 1:
-                 return new AguardaInicio(jogo);
-             default:
-                 return null;
-         }
+        int op = Utils.escolheOpcao("Sim", "Não");
+        if (op == 1) {
+            return new AguardaInicio(jogo);
+        }
+        return null;
     }
 
     @Override

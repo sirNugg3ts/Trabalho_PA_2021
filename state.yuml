@@ -3,7 +3,8 @@
 
 (start)->(AguardaInicio)
 (AguardaInicio)[Comeca]->(AguardaJogador)
-(AguardaJogador)[JogaPeca]->(AguardaJogador)
+(AguardaJogador)[JogaPeca ]->(AguardaJogador)
+(AguardaJogador)[JogaPecaDourada ]->(AguardaJogador)
 (AguardaJogador)[Minijogo]->(AguardaMiniJogo)
 (AguardaMiniJogo)->(AguardaJogador)
 (AguardaJogador)[Termina]->(FimJogo)

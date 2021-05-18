@@ -12,10 +12,7 @@ import java.util.Scanner;
 public class MiniJogos {
 
     private boolean typeRacerEnabled;
-
-    private boolean playerOneComplete,playerTwoComplete;
-
-
+    private boolean playerOneComplete, playerTwoComplete;
     private ArrayList<String> listaPalavras;
     private int palavrasLidas;
 
@@ -43,12 +40,12 @@ public class MiniJogos {
                 sc.close();
             } catch (FileNotFoundException e) {
                 System.err.println("Ok não era suposto chegar aqui");
-                System.err.println(e);
                 typeRacerEnabled = false;
             }
         }
     }
 
+    //games
     public boolean mathGame() {
         long start = System.currentTimeMillis();
         int acertados = 0;
@@ -111,7 +108,7 @@ public class MiniJogos {
         }
         if (System.currentTimeMillis() - start >= 30000)
             System.out.println("Tempo terminou");
-        if (acertados>4)
+        if (acertados > 4)
             System.out.println("Venceste o minijogo!!");
         return acertados > 4;
     }
@@ -137,7 +134,6 @@ public class MiniJogos {
         System.out.println("Tens " + (frase.length() / 2) + " segundos para escrever!");
         System.out.println(frase);
 
-
         if (frase.equals(consoleReader.nextLine())) {
             if (System.currentTimeMillis() - start <= (frase.length() * 1000L) / 2) {
                 System.out.println("Resposta correta, demoraste " + (System.currentTimeMillis() - start) / 1000 + " segundos");
@@ -150,8 +146,9 @@ public class MiniJogos {
             System.out.println("Resposta diferente");
             return false;
         }
-
     }
+
+    //boolean checkers
 
     public boolean isTypeRacerEnabled() {
         return typeRacerEnabled;
@@ -161,12 +158,14 @@ public class MiniJogos {
         return playerOneComplete;
     }
 
-    public void setPlayerOneComplete(boolean playerOneComplete) {
-        this.playerOneComplete = playerOneComplete;
-    }
-
     public boolean isPlayerTwoComplete() {
         return playerTwoComplete;
+    }
+
+    //sets
+
+    public void setPlayerOneComplete(boolean playerOneComplete) {
+        this.playerOneComplete = playerOneComplete;
     }
 
     public void setPlayerTwoComplete(boolean playerTwoComplete) {

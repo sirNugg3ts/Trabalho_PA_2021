@@ -5,10 +5,16 @@ import pt.isec.a2018019825.jogo.logica.Situacao;
 public interface IEstado {
 
     IEstado comeca();
+
     IEstado jogaPeca(int coluna);
+
     IEstado termina();
+
     IEstado minijogo();
+
     IEstado jogaPecaDourada(int coluna);
+
+    IEstado playBot();
 
     Situacao getSituacaoAtual();
 }

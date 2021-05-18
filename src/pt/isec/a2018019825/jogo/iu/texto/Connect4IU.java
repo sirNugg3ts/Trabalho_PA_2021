@@ -40,23 +40,21 @@ public class Connect4IU {
     private void minijogoIU() {
         //me.nextPlayer -> True - Player 1
         //              -> False - Player 2
-
-        if (me.nextPlayerOne()){
+        if (me.nextPlayerOne()) {
             System.out.println(me.getPlayerOneName() + ", podes jogar um minijogo para ganhar uma peça dourada");
-            int op = Utils.escolheOpcao("Sim","Não");
-            if (op == 1){
+            int op = Utils.escolheOpcao("Sim", "Não");
+            if (op == 1)
                 me.miniJogo();
-            }else{
+            else
                 me.ignoraMiniJogo();
-            }
-        }else{
+        } else {
             System.out.println(me.getPlayerTwoName() + ", podes jogar um minijogo para ganhar uma peça dourada\n Queres jogar?");
-            int op = Utils.escolheOpcao("Sim","Não");
-            if (op == 1){
+            int op = Utils.escolheOpcao("Sim", "Não");
+            if (op == 1)
                 me.miniJogo();
-            }else{
+            else
                 me.ignoraMiniJogo();
-            }
+
         }
     }
 
@@ -85,21 +83,21 @@ public class Connect4IU {
     }
 
     private void aguardaJogadorIU() {
-
         if (me.isNextPlayerBot())
             me.playBot();
-        else{
+        else {
             int op;
-            if (me.getNPecasDouradas(me.nextPlayerOne()) > 0){
-                op = Utils.escolheOpcao("Jogar Peça Normal","Jogar Peça Dourada", "Sair");
+            if (me.getNPecasDouradas(me.nextPlayerOne()) > 0) {
+                op = Utils.escolheOpcao("Jogar Peça Normal", "Jogar Peça Dourada", "Sair");
                 switch (op) {
-                    case 1:{
+                    case 1: {
                         int coluna;
                         do {
                             coluna = Utils.pedeInteiro("Indique a coluna: ");
                         } while (coluna < 0 || coluna > 7);
                         me.jogaPeca(coluna);
-                        break;}
+                        break;
+                    }
                     case 2:
                         int coluna;
                         do {
@@ -111,27 +109,22 @@ public class Connect4IU {
                         sair = true;
                         break;
                 }
-            }
-            else{
+            } else {
                 op = Utils.escolheOpcao("Jogar Peça Normal", "Sair");
                 switch (op) {
-                    case 1:{
+                    case 1: {
                         int coluna;
                         do {
                             coluna = Utils.pedeInteiro("Indique a coluna: ");
                         } while (coluna < 0 || coluna > 7);
                         me.jogaPeca(coluna);
-                        break;}
+                        break;
+                    }
                     case 0:
                         sair = true;
                         break;
                 }
             }
-
-
-
         }
-
-
     }
 }
