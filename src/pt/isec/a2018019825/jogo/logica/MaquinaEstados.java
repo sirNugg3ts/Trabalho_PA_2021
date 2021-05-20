@@ -170,4 +170,13 @@ public class MaquinaEstados {
         jogo.removeCredito(vezJogador1());
         setEstadoAtual(new AguardaJogador(jogo));
     }
+
+    public void setJogo(String nome) {
+        this.jogo = SaveAndLoad.loadGame(nome);
+        setEstadoAtual(new AguardaJogador(jogo));
+    }
+
+    public void saveGame(String nome) {
+        SaveAndLoad.saveState(jogo,nome);
+    }
 }

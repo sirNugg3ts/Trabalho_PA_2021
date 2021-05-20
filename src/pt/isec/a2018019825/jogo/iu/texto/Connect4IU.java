@@ -4,6 +4,8 @@ import pt.isec.a2018019825.jogo.Utils.Utils;
 import pt.isec.a2018019825.jogo.logica.MaquinaEstados;
 import pt.isec.a2018019825.jogo.logica.Situacao;
 
+import java.util.Scanner;
+
 public class Connect4IU {
     MaquinaEstados me;
     boolean sair;
@@ -77,7 +79,7 @@ public class Connect4IU {
         else {
             int op;
             if (me.getNPecasDouradas(me.vezJogador1()) > 0) {
-                op = Utils.escolheOpcao("Jogar Peça Normal", "Jogar Peça Dourada", "Voltar atrás","Log atual","Log completo","Sair");
+                op = Utils.escolheOpcao("Jogar Peça Normal", "Jogar Peça Dourada", "Voltar atrás","Log atual","Log completo","Guardar Jogo","Carrega Jogo","Sair");
                 switch (op) {
                     case 1: {
                         int coluna;
@@ -105,17 +107,27 @@ public class Connect4IU {
                         System.out.println(me.getAllLogs());
                         break;
                     }
+                    case 6:{
+                        saveGameIU();
+                        break;
+                    }
+                    case 7:{
+                        loadGameIU();
+                        break;
+                    }
                     case 0:
                         sair = true;
                         break;
                 }
             } else {
-                op = Utils.escolheOpcao("Jogar Peça Normal","Voltar atras","Log atual","Log completo", "Sair");
+                op = Utils.escolheOpcao("Jogar Peça Normal","Voltar atras","Log atual","Log completo","Guardar Jogo","Carrega Jogo", "Sair");
                 switch (op) {
                     case 1: {
                         int coluna;
                         do {
                             coluna = Utils.pedeInteiro("Indique a coluna: ");
+                            if(coluna < 0 || coluna > 7)
+                                System.out.println("Coluna inválida");
                         } while (coluna < 0 || coluna > 7);
                         me.jogaPeca(coluna);
                         break;
@@ -134,12 +146,32 @@ public class Connect4IU {
                         System.out.println(me.getAllLogs());
                         break;
                     }
+                    case 5:{
+                        saveGameIU();
+                        break;
+                    }
+                    case 6:{
+                        loadGameIU();
+                        break;
+                    }
                     case 0:
                         sair = true;
                         break;
                 }
             }
         }
+    }
+
+    private void saveGameIU() {
+        String nome;
+        Scanner sc = new Scanner(System.in);
+
+        do{
+            System.out.println("Indique o nome do ficheiro save: ");
+            nome = sc.nextLine();
+        }while(nome.isEmpty());
+
+        me.saveGame(nome);
     }
 
     private void goBack() {
@@ -153,5 +185,17 @@ public class Connect4IU {
         }while (nSnaps > me.getNoSnapshots() || nSnaps > me.getCreditos(me.vezJogador1()));
         for (int i=0;i < nSnaps;i++)
             me.undo();
+    }
+
+    private void loadGameIU(){
+        String nome;
+        Scanner sc = new Scanner(System.in);
+        do{
+            System.out.println("Indique o nome do ficheiro: ");
+            nome = sc.nextLine();
+        }while (nome.isEmpty());
+
+        me.setJogo(nome);
+
     }
 }
