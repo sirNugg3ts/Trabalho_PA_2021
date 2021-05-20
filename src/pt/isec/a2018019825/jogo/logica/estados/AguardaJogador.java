@@ -24,20 +24,33 @@ public class AguardaJogador extends EstadoAdapter {
             return this;
         }
 
+        if (jogo.vezJogador1())
+            jogo.recorda("Player1: coluna " + coluna);
+        else
+            jogo.recorda("Player2: coluna " + coluna);
+
         jogo.colocaPeca(coluna);
+
+
+
 
         //verificar proximo estado
 
         if (jogo.verificaVencedor('Y')) { //player 1 ganhou
             jogo.setWinner(true);
+            jogo.recorda("Player1: Venceu");
             return new FimJogo(jogo);
         } else if (jogo.verificaVencedor('R')) {//player 2 ganhou
             jogo.setWinner(false);
+            jogo.recorda("Player2: Venceu");
             return new FimJogo(jogo);
         }
 
-        if (jogo.tabuleiroCheio()) // ta cheio, e ninguem ganhou, logo empate
+        if (jogo.tabuleiroCheio()){
+            jogo.recorda("Fim: Empate");// ta cheio, e ninguem ganhou, logo empate
             return new FimJogo(jogo);
+        }
+
 
         //se ninguem ganhou nem esta em empate nem é para ir a minijogo, próxima ronda
         if (((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9)) && !jogo.isNextPlayerBot())
@@ -62,17 +75,27 @@ public class AguardaJogador extends EstadoAdapter {
         do {
             x = random.nextInt(6);
         } while (jogo.colunaCheia(x));
+        if (jogo.vezJogador1())
+            jogo.recorda("Player1: coluna " + x);
+        else
+            jogo.recorda("Player2: coluna " + x);
         jogo.colocaPeca(x);
+
 
         if (jogo.verificaVencedor('Y')) { //player 1 ganhou
             jogo.setWinner(true);
+            jogo.recorda("Player1: Venceu");
             return new FimJogo(jogo);
         } else if (jogo.verificaVencedor('R')) {//player 2 ganhou
             jogo.setWinner(false);
+            jogo.recorda("Player2: Venceu");
             return new FimJogo(jogo);
         }
-        if (jogo.tabuleiroCheio()) // ta cheio, e ninguem ganhou, logo empate
+        if (jogo.tabuleiroCheio()) {
+            jogo.recorda("Fim: Empate");// ta cheio, e ninguem ganhou, logo empate
             return new FimJogo(jogo);
+        }
+
 
         //se ninguem ganhou nem esta em empate nem é para ir a minijogo, próxima ronda
         if (((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9)) && !jogo.isNextPlayerBot())

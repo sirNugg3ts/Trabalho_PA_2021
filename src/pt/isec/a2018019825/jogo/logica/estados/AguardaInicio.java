@@ -12,6 +12,7 @@ public class AguardaInicio extends EstadoAdapter {
     @Override
     public IEstado comeca() {
         jogo.comeca();
+        jogo.recorda("Vou iniciar o jogo");
         return new AguardaJogador(jogo);
     }
 

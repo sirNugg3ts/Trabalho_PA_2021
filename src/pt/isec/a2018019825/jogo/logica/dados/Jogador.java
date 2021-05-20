@@ -1,6 +1,8 @@
 package pt.isec.a2018019825.jogo.logica.dados;
 
-public class Jogador {
+import java.io.Serializable;
+
+public class Jogador implements Serializable {
     private static int nBots = 1;
     private final String nome;
     private int nPecasDouradas;
@@ -36,5 +38,13 @@ public class Jogador {
 
     public void setnPecasDouradas(int nPecasDouradas) {
         this.nPecasDouradas = nPecasDouradas;
+    }
+
+    public int getCreditos() {
+        return creditos;
+    }
+
+    public void setCreditos(int creditos) {
+        this.creditos = creditos;
     }
 }

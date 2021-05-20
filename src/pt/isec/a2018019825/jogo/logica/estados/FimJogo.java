@@ -15,8 +15,13 @@ public class FimJogo extends EstadoAdapter {
         if (jogo.tabuleiroCheio()) {
             System.out.println("Empate");
         } else {
-            System.out.println(jogo.getWinnerName() + "Venceu a partida");
+            System.out.println(jogo.getWinnerName() + " Venceu a partida");
         }
+
+        //save log
+        jogo.sealLog();
+
+
 
         System.out.println("Deseja iniciar um novo jogo?");
         int op = Utils.escolheOpcao("Sim", "Não");

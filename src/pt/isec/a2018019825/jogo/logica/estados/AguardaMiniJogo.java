@@ -27,10 +27,25 @@ public class AguardaMiniJogo extends EstadoAdapter {
         } else // se o typeracer nao funcionar, calha sempre o jogo da matematica
             win = jogo.startMathGame();
 
-        if (win)
+        if (win){
+
+            if (jogo.vezJogador1())
+                jogo.recorda("Player1: Venceu minijogo");
+            else
+                jogo.recorda("Player2: Venceu minijogo");
+
             jogo.addPecaDourada(jogo.vezJogador1()); //ganha a peça dourada e pode jogar
-        else
+        }
+
+        else{
+            if (jogo.vezJogador1())
+                jogo.recorda("Player1: Perdeu minijogo");
+            else
+                jogo.recorda("Player2: Perdeu minijogo");
+
             jogo.skipsTurn(); //perdeu, logo nao ganha a ronda e passa a vez para o proximo jogador
+        }
+
 
         jogo.completeMiniGame(jogo.vezJogador1());
 

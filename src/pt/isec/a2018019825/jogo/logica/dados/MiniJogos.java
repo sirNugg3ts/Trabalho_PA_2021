@@ -4,12 +4,13 @@ import pt.isec.a2018019825.jogo.Utils.Utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-public class MiniJogos {
+public class MiniJogos implements Serializable {
 
     private boolean typeRacerEnabled;
     private boolean playerOneComplete, playerTwoComplete;

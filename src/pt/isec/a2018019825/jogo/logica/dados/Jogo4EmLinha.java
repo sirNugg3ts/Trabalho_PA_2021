@@ -2,12 +2,19 @@ package pt.isec.a2018019825.jogo.logica.dados;
 
 
 import pt.isec.a2018019825.jogo.Utils.Utils;
+import pt.isec.a2018019825.jogo.logica.memento.IMementoOriginator;
+import pt.isec.a2018019825.jogo.logica.memento.Memento;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Jogo4EmLinha {
-    private final char[][] tabuleiro = new char[7][6];
+public class Jogo4EmLinha implements Serializable, IMementoOriginator {
+    ArrayList<String> historicoJogos;
+    StringBuilder historicoAtual;
+    private char[][] tabuleiro = new char[7][6];
     private int round;
 
     private Jogador playerOne, playerTwo;
@@ -18,12 +25,16 @@ public class Jogo4EmLinha {
 
     private MiniJogos minijogos;
 
+
+
     //construtor e iniciador
 
     public Jogo4EmLinha() {
+        historicoJogos = new ArrayList<>();
     }
 
     public void comeca() {
+        historicoAtual = new StringBuilder();
         //esvaziar tabuleiro
         for (char[] chars : tabuleiro) Arrays.fill(chars, ' ');
         Jogador.resetBots();
@@ -183,6 +194,10 @@ public class Jogo4EmLinha {
         return playerOne.getNome();
     }
 
+    public String getNomeJogador2() {
+        return playerTwo.getNome();
+    }
+
     public String getWinnerName() {
         if (empate)
             return "empate";
@@ -190,10 +205,6 @@ public class Jogo4EmLinha {
             return playerOne.getNome();
         else
             return playerTwo.getNome();
-    }
-
-    public String getNomeJogador2() {
-        return playerTwo.getNome();
     }
 
     public int getNRounds() {
@@ -208,6 +219,13 @@ public class Jogo4EmLinha {
         return playerTwo.getnPecasDouradas();
     }
 
+    public int getCreditos(boolean player){
+        if (player)
+            return playerOne.getCreditos();
+        else
+            return playerTwo.getCreditos();
+    }
+
     //sets
 
     private void setPeca(char y, int coluna) {
@@ -215,6 +233,13 @@ public class Jogo4EmLinha {
         while (tabuleiro[coluna][i] != ' ')
             i++;
         tabuleiro[coluna][i] = y;
+    }
+
+    public void removeCredito(boolean player){
+        if (player)
+            playerOne.setCreditos(playerOne.getCreditos()-1);
+        else
+            playerTwo.setCreditos(playerTwo.getCreditos()-1);
     }
 
     public void setWinner(boolean player) {
@@ -267,6 +292,32 @@ public class Jogo4EmLinha {
     }
 
 
+
+
+    public void recorda(String log){
+        historicoAtual.append( "-> " + log + "\n");
+    }
+
+    public void sealLog(){
+        historicoJogos.add(historicoAtual.toString());
+    }
+
+    public String getLogAtual(){
+        return historicoAtual.toString();
+    }
+
+    public ArrayList<String> listaHistoricosJogos(){
+        return historicoJogos;
+    }
+
+    public String getAllLogs(){
+        StringBuilder sb = new StringBuilder();
+        for (String potato : historicoJogos)
+            sb.append(potato);
+        sb.append("\n--------");
+        return sb.toString();
+    }
+
     //toString
 
     public String tabuleiroToString() {
@@ -288,4 +339,17 @@ public class Jogo4EmLinha {
         return sb.toString();
     }
 
+    @Override
+    public Memento getMemento() throws IOException {
+         //a contagem de grupos de 4 jogadas para acesso aos mini-jogos é colocada a zero.
+        return new Memento(new Object[] {tabuleiro,nextPlayer});
+    }
+
+    @Override
+    public void setMemento(Memento m) throws IOException, ClassNotFoundException {
+       Object[] objects = (Object[]) m.getSnapShot();
+       this.tabuleiro = (char[][]) objects[0];
+       this.nextPlayer = (boolean) objects[1];
+       this.round = 0;
+    }
 }

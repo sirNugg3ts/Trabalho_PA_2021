@@ -17,7 +17,7 @@ public class Connect4IU {
         while (!sair) {
             //menu here
             System.out.println(me);
-            System.out.println(me.getRounds());
+            System.out.println("Rondas no: " + me.getRounds());
             Situacao situacao = me.getSituacaoAtual();
             switch (situacao) {
                 case AGUARDA_INICIO:
@@ -40,7 +40,7 @@ public class Connect4IU {
     private void minijogoIU() {
         //me.nextPlayer -> True - Player 1
         //              -> False - Player 2
-        if (me.nextPlayerOne()) {
+        if (me.vezJogador1()) {
             System.out.println(me.getPlayerOneName() + ", podes jogar um minijogo para ganhar uma peça dourada");
             int op = Utils.escolheOpcao("Sim", "Não");
             if (op == 1)
@@ -64,31 +64,20 @@ public class Connect4IU {
 
     private void fimJogoIU() {
         System.out.println(me.tabuleiroToString());
-        System.out.println("O jogo terminou");
-        if (me.getWinner().equals("Empate"))
-            System.out.println("O jogo acabou em empate");
-        else
-            System.out.println(me.getWinner() + " é o vencedor da partida");
-
-        System.out.println("Novo jogo?");
-        int op = Utils.escolheOpcao("Sim", "Não");
-        switch (op) {
-            case 1:
-                me.comeca();
-                break;
-            default:
-                sair = true;
-                break;
-        }
+        if (me.termina())
+            sair = true;
     }
 
     private void aguardaJogadorIU() {
-        if (me.isNextPlayerBot())
+        if (me.isNextPlayerBot()){
             me.playBot();
+            System.out.println("o bot jogou");
+        }
+
         else {
             int op;
-            if (me.getNPecasDouradas(me.nextPlayerOne()) > 0) {
-                op = Utils.escolheOpcao("Jogar Peça Normal", "Jogar Peça Dourada", "Sair");
+            if (me.getNPecasDouradas(me.vezJogador1()) > 0) {
+                op = Utils.escolheOpcao("Jogar Peça Normal", "Jogar Peça Dourada", "Voltar atrás","Log atual","Log completo","Sair");
                 switch (op) {
                     case 1: {
                         int coluna;
@@ -105,12 +94,23 @@ public class Connect4IU {
                         } while (coluna < 0 || coluna > 7);
                         me.jogaPecaDourada(coluna);
                         break;
+                    case 3: {
+                        goBack();
+                    }
+                    case 4:{
+                        System.out.println(me.getLogAtual());
+                        break;
+                    }
+                    case 5:{
+                        System.out.println(me.getAllLogs());
+                        break;
+                    }
                     case 0:
                         sair = true;
                         break;
                 }
             } else {
-                op = Utils.escolheOpcao("Jogar Peça Normal", "Sair");
+                op = Utils.escolheOpcao("Jogar Peça Normal","Voltar atras","Log atual","Log completo", "Sair");
                 switch (op) {
                     case 1: {
                         int coluna;
@@ -120,11 +120,38 @@ public class Connect4IU {
                         me.jogaPeca(coluna);
                         break;
                     }
+                    case 2: {
+                        goBack();
+                        break;
+                    }
+                    case 3:{
+                        System.out.println("---- Log ----");
+                        System.out.println(me.getLogAtual());
+                        break;
+                    }
+                    case 4:{
+                        System.out.println("---- Full Log ----");
+                        System.out.println(me.getAllLogs());
+                        break;
+                    }
                     case 0:
                         sair = true;
                         break;
                 }
             }
         }
+    }
+
+    private void goBack() {
+        int nSnaps;
+        do {
+            nSnaps = Utils.pedeInteiro("Quantas rondas?");
+            if (nSnaps > me.getNoSnapshots())
+                System.out.println("O número de rondas gravadas é inferior");
+            if (nSnaps > me.getCreditos(me.vezJogador1()))
+                System.out.println("Não tem créditos suficientes");
+        }while (nSnaps > me.getNoSnapshots() || nSnaps > me.getCreditos(me.vezJogador1()));
+        for (int i=0;i < nSnaps;i++)
+            me.undo();
     }
 }
