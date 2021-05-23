@@ -1,6 +1,5 @@
 package pt.isec.a2018019825.jogo.logica.estados;
 
-import pt.isec.a2018019825.jogo.Utils.Utils;
 import pt.isec.a2018019825.jogo.logica.Situacao;
 import pt.isec.a2018019825.jogo.logica.dados.Jogo4EmLinha;
 
@@ -11,29 +10,11 @@ public class FimJogo extends EstadoAdapter {
     }
 
     @Override
-    public IEstado termina() {
-        if (jogo.tabuleiroCheio()) {
-            System.out.println("Empate");
-        } else {
-            System.out.println(jogo.getWinnerName() + " Venceu a partida");
-        }
+    public IEstado termina(boolean end) {
 
-        //save log
-        jogo.sealLog();
-
-
-
-        System.out.println("Deseja iniciar um novo jogo?");
-        int op = Utils.escolheOpcao("Sim", "Não");
-        if (op == 1) {
+        if (!end)
             return new AguardaInicio(jogo);
-        }
         return null;
-    }
-
-    @Override
-    public IEstado comeca() {
-        return new AguardaInicio(jogo);
     }
 
     @Override

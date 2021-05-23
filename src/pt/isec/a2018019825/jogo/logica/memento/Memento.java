@@ -2,7 +2,7 @@ package pt.isec.a2018019825.jogo.logica.memento;
 
 import java.io.*;
 
-public class Memento {
+public class Memento implements Serializable {
     private byte[] snapshot = null;
 
     public Memento(Object obj) throws IOException{

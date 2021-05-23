@@ -2,6 +2,7 @@ package pt.isec.a2018019825.jogo.logica.dados;
 
 import java.io.Serializable;
 
+
 public class Jogador implements Serializable {
     private static int nBots = 1;
     private final String nome;

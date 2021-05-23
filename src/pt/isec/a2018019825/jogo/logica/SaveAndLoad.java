@@ -1,37 +1,33 @@
 package pt.isec.a2018019825.jogo.logica;
 
-import pt.isec.a2018019825.jogo.logica.dados.Jogo4EmLinha;
+import pt.isec.a2018019825.jogo.logica.memento.CareTaker;
 
 import java.io.*;
 
 public class SaveAndLoad {
-    public static void saveState(Object obj,String nome){
-        try{
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nome));
 
-            oos.writeObject(obj);
-            oos.close();
-            return;
-        } catch (Exception e) {
-            System.err.println(e);
-            return;
-        }
+    public static boolean saveState(Object obj, CareTaker caretaker, String nome) throws IOException {
+
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nome));
+
+        Object[] objects = {obj, caretaker};
+
+        oos.writeObject(objects);
+        oos.close();
+        return true;
+
     }
 
-    public static Jogo4EmLinha loadGame(String nome){
-        Jogo4EmLinha restoredGame;
+    public static Object[] loadGame(String nome) throws Exception {
 
-        try{
-            ObjectInputStream ois  = new ObjectInputStream(new FileInputStream(nome));
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nome));
 
-            restoredGame = (Jogo4EmLinha) ois.readObject();
-            ois.close();
-            return restoredGame;
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        Object[] objects;
 
-        return null;
+        objects = (Object[]) ois.readObject();
 
+
+        ois.close();
+        return objects;
     }
 }

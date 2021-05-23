@@ -1,10 +1,11 @@
 package pt.isec.a2018019825.jogo.logica.memento;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class CareTaker {
+public class CareTaker implements Serializable {
     private final IMementoOriginator originator;
 
     private Deque<Memento> stackHistorico = new ArrayDeque<>();
@@ -32,16 +33,12 @@ public class CareTaker {
         return stackHistorico.size();
     }
 
-    public void undo(){
+    public void undo() throws Exception{
         if (stackHistorico.isEmpty())
             return;
-
-        try{
             Memento anterior = stackHistorico.pop();
             originator.setMemento(anterior);
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("undo: " + e);
-        }
+
     }
 
 

@@ -3,9 +3,10 @@ package pt.isec.a2018019825.jogo.logica;
 import pt.isec.a2018019825.jogo.logica.dados.Jogo4EmLinha;
 import pt.isec.a2018019825.jogo.logica.estados.AguardaInicio;
 import pt.isec.a2018019825.jogo.logica.estados.AguardaJogador;
-import pt.isec.a2018019825.jogo.logica.estados.AguardaMiniJogo;
 import pt.isec.a2018019825.jogo.logica.estados.IEstado;
 import pt.isec.a2018019825.jogo.logica.memento.CareTaker;
+
+import java.io.IOException;
 
 public class MaquinaEstados {
 
@@ -28,12 +29,12 @@ public class MaquinaEstados {
 
     //gets
 
-    public int getNoSnapshots(){
+    public int getNoSnapshots() {
         return caretaker.size();
     }
 
-    public int getCreditos(boolean player){
-            return jogo.getCreditos(player);
+    public int getCreditos(boolean player) {
+        return jogo.getCreditos(player);
     }
 
     public int getRounds() {
@@ -70,34 +71,48 @@ public class MaquinaEstados {
             return jogo.getPecasDouradasPlayerTwo();
     }
 
-    public String getLogAtual(){
+    public String getLogAtual() {
         return jogo.getLogAtual();
     }
 
-    public String getAllLogs(){
+    public String getAllLogs() {
         return jogo.getAllLogs();
     }
 
 
     //transition methods
 
-    public void comeca() {
-        setEstadoAtual(estadoAtual.comeca());
+    public void comeca(String nomeJogador1, String nomeJogador2) {
+        setEstadoAtual(estadoAtual.comeca(nomeJogador1, nomeJogador2));
     }
 
-    public boolean termina(){setEstadoAtual(estadoAtual.termina());
+    public void termina(boolean restart) {
+        setEstadoAtual(estadoAtual.termina(restart));
         caretaker.limpaStack();
-        return estadoAtual == null;
+    }
 
+    public void miniJogo() {
+        setEstadoAtual(estadoAtual.minijogo());
+    }
+
+    public void acabaMiniJogo() {
+        setEstadoAtual(estadoAtual.acabaMiniJogo());
+    }
+
+    public void ignoraMiniJogo() {
+        setEstadoAtual(estadoAtual.ignoraMiniJogo());
     }
 
 
+    public int jogaPeca(int coluna) throws Exception {
 
-    public void jogaPeca(int coluna) {
+        if (jogo.colunaCheia(coluna))
+            return -1;
         caretaker.gravaMemento();
         setEstadoAtual(estadoAtual.jogaPeca(coluna));
-
+        return 0;
     }
+
 
     public void jogaPecaDourada(int coluna) {
         caretaker.gravaMemento();
@@ -105,44 +120,20 @@ public class MaquinaEstados {
 
     }
 
-    public void playBot() {
+    public void playBot() throws Exception {
         caretaker.gravaMemento();
         setEstadoAtual(estadoAtual.playBot());
-
     }
 
-
-
-
-    public void miniJogo() {
-        setEstadoAtual(estadoAtual.minijogo());
-        if ((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9))
-            setEstadoAtual(new AguardaMiniJogo(jogo));
-    }
-
-    public void ignoraMiniJogo() {
-        jogo.completeMiniGame(jogo.vezJogador1());
-        if ((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 8) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 9))
-            setEstadoAtual(new AguardaMiniJogo(jogo));
-        setEstadoAtual(new AguardaJogador(jogo));
-
-    }
 
     public boolean isNextPlayerBot() {
         return jogo.isNextPlayerBot();
     }
 
-
-
-    //toString Methods
-    public String tabuleiroToString() {
-        return jogo.tabuleiroToString();
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Rondas Gravadas: " + caretaker.size() + "\n");
+        //DEBUG: sb.append("Rondas Gravadas: " + caretaker.size() + "\n");
         switch (estadoAtual.getSituacaoAtual()) {
             case AGUARDA_INICIO:
                 sb.append("Início de um novo jogo");
@@ -165,18 +156,74 @@ public class MaquinaEstados {
         return sb.toString();
     }
 
-    public void undo() {
+    public void undo() throws Exception {
         caretaker.undo();
         jogo.removeCredito(vezJogador1());
         setEstadoAtual(new AguardaJogador(jogo));
     }
 
-    public void setJogo(String nome) {
-        this.jogo = SaveAndLoad.loadGame(nome);
+    public void setJogo(String nome) throws Exception {
+        Object[] objects = SaveAndLoad.loadGame(nome);
+        this.jogo = (Jogo4EmLinha) objects[0];
+        this.caretaker = (CareTaker) objects[1];
         setEstadoAtual(new AguardaJogador(jogo));
     }
 
-    public void saveGame(String nome) {
-        SaveAndLoad.saveState(jogo,nome);
+    public void saveGame(String nome) throws IOException {
+        SaveAndLoad.saveState(jogo, caretaker, nome);
+    }
+
+    public boolean isTabuleiroCheio() {
+        return jogo.tabuleiroCheio();
+    }
+
+    public boolean getMiniGame() {
+        return jogo.getMiniGame();
+    }
+
+    public void startClock() {
+        jogo.startClock();
+    }
+
+    public boolean timeOver() {
+        return (System.currentTimeMillis() - jogo.getStartTime() > 30000L) || jogo.getAcertadas() == 5;
+    }
+
+
+    //minijogo matematica
+    public String getQuestaoMath() {
+        jogo.criaQuestaoMatematica();
+        switch (jogo.getMathGameOperation()) {
+            case SOMA:
+                return jogo.getMiniJogoN1() + "+" + jogo.getMiniJogoN2();
+            case SUB:
+                return jogo.getMiniJogoN1() + "-" + jogo.getMiniJogoN2();
+            case MULT:
+                return jogo.getMiniJogoN1() + "*" + jogo.getMiniJogoN2();
+            case DIV:
+                return jogo.getMiniJogoN1() + "/" + jogo.getMiniJogoN2();
+        }
+        return null;
+    }
+
+    public boolean validaConta(int resposta) {
+        return jogo.validaConta(resposta);
+    }
+
+    public boolean wonMiniGame() {
+        return jogo.sealGame();
+    }
+
+
+    public String getQuestaoTypeRacer() {
+        return jogo.getQuestaoTypeRacer();
+    }
+
+    public void verificaTypeRacer(String resposta) {
+        jogo.verificaTypeRacer(resposta);
+    }
+
+    public int getAcertados() {
+        return jogo.getAcertadas();
     }
 }
