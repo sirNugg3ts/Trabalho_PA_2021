@@ -2,7 +2,7 @@ package pt.isec.a2018019825.jogo.logica.estados;
 
 import pt.isec.a2018019825.jogo.logica.dados.Jogo4EmLinha;
 
-public abstract class EstadoAdapter implements IEstado{
+public abstract class EstadoAdapter implements IEstado {
 
     protected Jogo4EmLinha jogo;
 
@@ -11,17 +11,17 @@ public abstract class EstadoAdapter implements IEstado{
     }
 
     @Override
-    public IEstado comeca() {
+    public IEstado comeca(String nomeJogador1, String nomeJogador2) {
         return this;
     }
 
     @Override
-    public IEstado termina() {
+    public IEstado termina(boolean restart) {
         return this;
     }
 
     @Override
-    public IEstado jogaPeca(int coluna) {
+    public IEstado jogaPeca(int coluna) throws Exception {
         return this;
     }
 
@@ -32,6 +32,21 @@ public abstract class EstadoAdapter implements IEstado{
 
     @Override
     public IEstado jogaPecaDourada(int coluna) {
+        return this;
+    }
+
+    @Override
+    public IEstado acabaMiniJogo() {
+        return this;
+    }
+
+    @Override
+    public IEstado ignoraMiniJogo() {
+        return this;
+    }
+
+    @Override
+    public IEstado playBot() throws Exception {
         return this;
     }
 }

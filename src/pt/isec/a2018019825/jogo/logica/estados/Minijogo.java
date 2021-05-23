@@ -3,19 +3,15 @@ package pt.isec.a2018019825.jogo.logica.estados;
 import pt.isec.a2018019825.jogo.logica.Situacao;
 import pt.isec.a2018019825.jogo.logica.dados.Jogo4EmLinha;
 
-public class AguardaMiniJogo extends EstadoAdapter {
+public class Minijogo extends EstadoAdapter{
 
-    public AguardaMiniJogo(Jogo4EmLinha jogo) {
+    public Minijogo(Jogo4EmLinha jogo) {
         super(jogo);
     }
 
-    @Override
-    public IEstado minijogo() {
-        return new Minijogo(jogo);
-    }
 
     @Override
-    public IEstado ignoraMiniJogo() {
+    public IEstado acabaMiniJogo() {
         jogo.completeMiniGame(jogo.vezJogador1());
         if ((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 6) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 7))
             return new AguardaMiniJogo(jogo);
@@ -24,6 +20,7 @@ public class AguardaMiniJogo extends EstadoAdapter {
 
     @Override
     public Situacao getSituacaoAtual() {
-        return Situacao.AGUARDA_MINIJOGO;
+        return Situacao.MINIJOGO;
     }
 }
+

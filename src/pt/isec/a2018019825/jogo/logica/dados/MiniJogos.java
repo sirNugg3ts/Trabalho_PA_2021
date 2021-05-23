@@ -1,29 +1,40 @@
 package pt.isec.a2018019825.jogo.logica.dados;
 
-import pt.isec.a2018019825.jogo.Utils.Utils;
+
+import pt.isec.a2018019825.jogo.logica.Operacao;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
+import java.io.Serializable;
+import java.util.*;
 
-public class MiniJogos {
+
+public class MiniJogos extends Jogo4EmLinha implements Serializable {
 
     private boolean typeRacerEnabled;
+    private boolean playerOneComplete, playerTwoComplete;
+    private boolean nextGame; //true -> typeRacer
+                              //false -> MathGame
 
-    private boolean playerOneComplete,playerTwoComplete;
-
-
+    private long start;
+    private int acertados;
+    //math game
+    private int numero1,numero2;
+    private Operacao operacao;
+    //text game
     private ArrayList<String> listaPalavras;
     private int palavrasLidas;
+    private String fraseEscolhidaTypeRacer;
+
+
 
     public MiniJogos() {
         palavrasLidas = 0;
         playerOneComplete = false;
         playerTwoComplete = false;
+        nextGame = false; //comecamos sempre no math game
 
+        //obter lista de palavras para o typeracer
         File ficheiroTypeRacer = new File("typeracer.txt");
         if (!ficheiroTypeRacer.canRead()) {
             System.err.println("Erro ao ler ficheiro texto typeracer.txt para minijogos");
@@ -31,97 +42,155 @@ public class MiniJogos {
             typeRacerEnabled = false;
         } else {
             try {
-
                 Scanner sc = new Scanner(ficheiroTypeRacer);
                 listaPalavras = new ArrayList<>();
                 while (sc.hasNextLine()) {
-                    listaPalavras.add(sc.nextLine());
-                    palavrasLidas++;
+                    String novaPalavra = sc.nextLine();
+                    novaPalavra = novaPalavra.trim().toLowerCase(Locale.ROOT);
+                    if (novaPalavra.length() >= 5){
+                        listaPalavras.add(novaPalavra);
+                        palavrasLidas++;
+                    }else{
+                        System.out.println(novaPalavra + " não é uma palavra válida");
+                    }
                 }
                 System.out.println("Ficheiro texto lido com sucesso: " + palavrasLidas + " palavras lidas");
                 typeRacerEnabled = true;
                 sc.close();
             } catch (FileNotFoundException e) {
                 System.err.println("Ok não era suposto chegar aqui");
-                System.err.println(e);
                 typeRacerEnabled = false;
             }
         }
     }
 
-    public boolean mathGame() {
-        long start = System.currentTimeMillis();
-        int acertados = 0;
 
-        while (System.currentTimeMillis() - start < 30000 && acertados < 5) {
-            int n1 = (int) ((Math.random() * 10) + 1);
-            int n2 = (int) ((Math.random() * 10) + 1);
+    //boolean checkers
 
-            int op = (int) (Math.random() * 4);
-
-            int resposta;
-
-            switch (op) {
-                case 0: //+
-                    resposta = Utils.pedeInteiro(n1 + "+" + n2 + "=");
-                    if (n1 + n2 == resposta) {
-                        System.out.println("Correto!");
-                        if (System.currentTimeMillis() - start < 30000)
-                            acertados++;
-                        else
-                            System.out.println("Já passaram os 30 segundos! Esta resposta não foi contada");
-                    } else
-                        System.out.println("Errado");
-                    break;
-                case 1:// -
-                    resposta = Utils.pedeInteiro(n1 + "-" + n2 + "=");
-                    if (n1 - n2 == resposta) {
-                        System.out.println("Correto!");
-                        if (System.currentTimeMillis() - start < 30000)
-                            acertados++;
-                        else
-                            System.out.println("Já passaram os 30 segundos!");
-                    } else
-                        System.out.println("Errado");
-                    break;
-                case 2: // *
-                    resposta = Utils.pedeInteiro(n1 + "*" + n2 + "=");
-                    if (n1 * n2 == resposta) {
-                        System.out.println("Correto!");
-                        if (System.currentTimeMillis() - start < 30000)
-                            acertados++;
-                        else
-                            System.out.println("Já passaram os 30 segundos!");
-                    } else
-                        System.out.println("Errado");
-                    break;
-                case 3: // /
-                    resposta = Utils.pedeInteiro(n1 + "/" + n2 + "=");
-                    if (n1 / n2 == resposta) {
-                        System.out.println("Correto!");
-                        if (System.currentTimeMillis() - start < 30000)
-                            acertados++;
-                        else
-                            System.out.println("Já passaram os 30 segundos!");
-                    } else
-                        System.out.println("Errado");
-                    break;
-
-            }
-        }
-        if (System.currentTimeMillis() - start >= 30000)
-            System.out.println("Tempo terminou");
-        if (acertados>4)
-            System.out.println("Venceste o minijogo!!");
-        return acertados > 4;
+    public boolean isPlayerOneComplete() {
+        return playerOneComplete;
     }
 
-    public boolean typeRacer() {
+    public boolean isPlayerTwoComplete() {
+        return playerTwoComplete;
+    }
 
+    //sets
+
+    public void setPlayerOneComplete(boolean playerOneComplete) {
+        this.playerOneComplete = playerOneComplete;
+    }
+
+    public void setPlayerTwoComplete(boolean playerTwoComplete) {
+        this.playerTwoComplete = playerTwoComplete;
+    }
+
+    //gets
+
+    public boolean getMiniGame() {
+        return nextGame;
+    }
+
+    public int getAcertadas() {
+        return acertados;
+    }
+
+
+    //Game methods
+
+    public void startClock() {
+        start = System.currentTimeMillis();
+        acertados = 0;
+    }
+
+    public boolean sealGame() {
+        if (nextGame){
+            //typeracer
+            nextGame = !nextGame;
+            return acertados == 1; //TODO: condicao para ganhar
+        }
+        else{
+            //mathgame
+            if (typeRacerEnabled)
+                nextGame = !nextGame;
+            return acertados >= 5;
+        }
+    }
+
+    public long getTime() {
+        return start;
+    }
+
+    //jogo matematica
+    public void criaQuestaoMatematica(){
+        numero1 = (int) ((Math.random() * 10) + 1);
+        numero2 = (int) ((Math.random() * 10) + 1);
+        switch ((int) (Math.random() * 4)){
+            case 0:
+                operacao = Operacao.SOMA;
+                break;
+            case 1:
+                operacao = Operacao.SUB;
+                break;
+            case 2:
+                operacao = Operacao.MULT;
+                break;
+            case 3:
+                operacao = Operacao.DIV;
+                break;
+        }
+    }
+
+    public Operacao getOperation() {
+        return operacao;
+    }
+
+    public int getNumber1() {
+        return numero1;
+    }
+
+    public int getNumber2() {
+        return numero2;
+    }
+
+    public boolean validaConta(int resposta) {
+        switch (operacao){
+            case SOMA:
+                if (numero1 + numero2 == resposta){
+                    acertados++;
+                    return true;
+                }else
+                    return false;
+            case SUB:
+                if (numero1 - numero2 == resposta){
+                    acertados++;
+                    return true;
+                }else
+                    return false;
+            case MULT:
+                if (numero1 * numero2 == resposta){
+                    acertados++;
+                    return true;
+                }else
+                    return false;
+            case DIV:
+                if (numero1 / numero2 == resposta){
+                    acertados++;
+                    return true;
+                }else
+                    return false;
+        }
+        return false;
+    }
+
+
+    //jogo typeracer
+
+    public String getQuestaoTypeRacer() {
+        //esta funcao escolhe e devolve a questao para typeracer, cada vez que é chamada uma nova frase é escolhida
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
         List<Integer> numbers = new ArrayList<>();
-        Scanner consoleReader = new Scanner(System.in);
 
         do {
             int x = random.nextInt(palavrasLidas - 1);
@@ -131,45 +200,17 @@ public class MiniJogos {
             }
         } while (numbers.size() < 5);
 
-        String frase = sb.toString().trim();
+        fraseEscolhidaTypeRacer = sb.toString().trim();
 
-        long start = System.currentTimeMillis();
-        System.out.println("Tens " + (frase.length() / 2) + " segundos para escrever!");
-        System.out.println(frase);
-
-
-        if (frase.equals(consoleReader.nextLine())) {
-            if (System.currentTimeMillis() - start <= (frase.length() * 1000L) / 2) {
-                System.out.println("Resposta correta, demoraste " + (System.currentTimeMillis() - start) / 1000 + " segundos");
-                return true;
-            } else {
-                System.out.println("Resposta correta, mas demoraste demasiado tempo: " + (System.currentTimeMillis() - start) / 1000 + " segundos");
-                return false;
-            }
-        } else {
-            System.out.println("Resposta diferente");
-            return false;
-        }
-
+        return fraseEscolhidaTypeRacer;
     }
 
-    public boolean isTypeRacerEnabled() {
-        return typeRacerEnabled;
-    }
-
-    public boolean isPlayerOneComplete() {
-        return playerOneComplete;
-    }
-
-    public void setPlayerOneComplete(boolean playerOneComplete) {
-        this.playerOneComplete = playerOneComplete;
-    }
-
-    public boolean isPlayerTwoComplete() {
-        return playerTwoComplete;
-    }
-
-    public void setPlayerTwoComplete(boolean playerTwoComplete) {
-        this.playerTwoComplete = playerTwoComplete;
+    public void verificaTypeRacer(String resposta) {
+        if (!fraseEscolhidaTypeRacer.equals(resposta)){
+            acertados = -1;
+        }else  if ((System.currentTimeMillis() - start >= (fraseEscolhidaTypeRacer.length() * 1000L) / 2))
+            acertados = 1;
+        else
+            acertados = 0;
     }
 }
