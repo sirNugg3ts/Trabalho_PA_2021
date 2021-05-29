@@ -1,6 +1,5 @@
 package pt.isec.a2018019825.jogo.logica.dados;
 
-
 import pt.isec.a2018019825.jogo.logica.Operacao;
 
 import java.io.File;
@@ -9,7 +8,7 @@ import java.io.Serializable;
 import java.util.*;
 
 
-public class MiniJogos extends Jogo4EmLinha implements Serializable {
+public class MiniJogos implements Serializable {
 
     private boolean typeRacerEnabled;
     private boolean playerOneComplete, playerTwoComplete;
