@@ -26,17 +26,32 @@ public abstract class EstadoAdapter implements IEstado {
     }
 
     @Override
+    public IEstado startMiniGame() {
+        return this;
+    }
+
+    @Override
+    public IEstado recebeResposta(int resposta) {
+        return this;
+    }
+
+    @Override
+    public IEstado recebeResposta(String resposta) {
+        return this;
+    }
+
+    @Override
+    public IEstado terminaMiniJogo() {
+        return this;
+    }
+
+    @Override
     public IEstado minijogo() {
         return this;
     }
 
     @Override
     public IEstado jogaPecaDourada(int coluna) {
-        return this;
-    }
-
-    @Override
-    public IEstado acabaMiniJogo() {
         return this;
     }
 

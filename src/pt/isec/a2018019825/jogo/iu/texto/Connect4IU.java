@@ -33,8 +33,14 @@ public class Connect4IU {
                 case AGUARDA_MINIJOGO:
                     AguardaMinijogoIU();
                     break;
-                case MINIJOGO:
+                case AGUARDA_INICIO_MINIJOGO:
                     MinijogoIU();
+                    break;
+                case MIINIJOGO_MATHGAME:
+                    MathGameIU();
+                    break;
+                case MINIJOGO_TYPERACER:
+                    TypeRacerIU();
                     break;
                 case FIM_JOGO:
                     fimJogoIU();
@@ -44,9 +50,46 @@ public class Connect4IU {
         sairIU();
     }
 
-    private void MinijogoIU() {
-        //jogos comecam sempre no de matematica
+    private void MathGameIU() {
+        int reposta = Utils.pedeInteiro(me.getQuestaoMath());
+        switch (me.validaConta(reposta)){
+            case -1:
+                System.out.println("Tempo terminou!");
+                System.out.println("Perdeu o minijogo");
+                break;
+            case 0:
+                System.out.println("Errado!");
+                break;
+            case 1:
+                System.out.println("Certo!");
+                break;
+            case 2:
+                System.out.println("Certo!\nGanhaste o minijogo");
+                break;
+        }
+    }
 
+    private void TypeRacerIU(){
+        Scanner sc = new Scanner(System.in);
+        System.out.println(me.getQuestaoTypeRacer());
+        String resposta = sc.nextLine();
+        me.verificaTypeRacer(resposta);
+        switch (me.getAcertados()) {
+            case -1:
+                System.out.println("Reposta errada!");
+                break;
+            case 0: {
+                System.out.println("Reposta certa mas demoraste demasiado tempo");
+                break;
+            }
+            case 1: {
+                System.out.println("Reposta certa!");
+                break;
+            }
+        }
+    }
+
+    private void MinijogoIU() {
 
         if (me.getMiniGame())
             System.out.println("Jogo escolhido: typeRacer");
@@ -55,70 +98,16 @@ public class Connect4IU {
         }
 
         //so para dar tempo a pessoa de ler o nome do jogo
+
         try {
-            Thread.sleep(5000);
+          Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        me.startClock();
-
-        if (me.getMiniGame()) {
-            //typeracer
-            //obter a frase
-            //obter a resposta
-            //verificar se acertou e ganhou
-            Scanner sc = new Scanner(System.in);
-            System.out.println(me.getQuestaoTypeRacer());
-            String resposta = sc.nextLine();
-            me.verificaTypeRacer(resposta);
-            switch (me.getAcertados()) {
-                case -1:
-                    System.out.println("Reposta errada!");
-                    break;
-                case 0: {
-                    System.out.println("Reposta certa mas demoraste demasiado tempo");
-                    break;
-                }
-                case 1: {
-                    System.out.println("Reposta certa!");
-                    break;
-                }
-            }
-
-            if (me.wonMiniGame()) {
-                System.out.println("Venceu o minijogo!");
-                System.out.println("Ganhou uma peça dourada");
-            } else {
-                System.out.println("Perdeu o minijogo!");
-                System.out.println("Não ganhou a peça dourada e vai passar a vez");
-            }
-            me.acabaMiniJogo();
-
-
-        } else {
-            //jogo matematica
-            while (!me.timeOver()) {
-                //pedir a conta
-                //pedir a resposta
-                //perguntar se esta correto
-                int resposta = Utils.pedeInteiro(me.getQuestaoMath());
-                if (me.validaConta(resposta)) {
-                    System.out.println("Correto!");
-                } else
-                    System.out.println("Errado!");
-            }
-        }
-
-        if (me.wonMiniGame()) {
-            System.out.println("Venceu o minijogo!");
-            System.out.println("Ganhou uma peça dourada");
-        } else {
-            System.out.println("Perdeu o minijogo!");
-            System.out.println("Não ganhou a peça dourada e vai passar a vez");
-        }
-        me.acabaMiniJogo();
+        me.startMiniGame();
     }
+
+
 
     private void AguardaMinijogoIU() {
         //me.nextPlayer -> True - Player 1

@@ -15,6 +15,9 @@ public class AguardaJogador extends EstadoAdapter {
     @Override
     public IEstado jogaPecaDourada(int coluna) {
         jogo.limpaColuna(coluna);
+        if ((!jogo.isPlayerOneBot() && !jogo.isPlayerOneComplete() && jogo.getPlayerOneRounds() == 3) || ((!jogo.isPlayerTwoBot()) && !jogo.isPlayerTwoComplete() && jogo.getPlayerTwoRounds() == 3))
+            return new AguardaMiniJogo(jogo);
+
         return new AguardaJogador(jogo);
     }
 
@@ -31,9 +34,15 @@ public class AguardaJogador extends EstadoAdapter {
         if (next != null)
             return next;
 
+
+        if (!jogo.vezJogador1()){
+            if (!jogo.isPlayerTwoBot() && !jogo.isPlayerTwoComplete() && jogo.getPlayerTwoRounds() == 3)
+                return new AguardaMiniJogo(jogo);
+        }else{
+            if (!jogo.isPlayerOneBot() && !jogo.isPlayerOneComplete() && jogo.getPlayerOneRounds() == 3)
+                return new AguardaMiniJogo(jogo);
+        }
         //se ninguem ganhou nem esta em empate nem é para ir a minijogo, próxima ronda
-        if (((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 6) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 7)) && !jogo.isNextPlayerBot())
-            return new AguardaMiniJogo(jogo);
         return new AguardaJogador(jogo);
     }
 
@@ -58,16 +67,13 @@ public class AguardaJogador extends EstadoAdapter {
 
         jogo.colocaPeca(x);
 
-
         //verificar proximo estado
         next = checkNextStage();
 
         if (next != null)
             return next;
 
-
-        //se ninguem ganhou nem esta em empate nem é para ir a minijogo, próxima ronda
-        if (((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 6) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 7)) && !jogo.isNextPlayerBot())
+        if ((!jogo.isPlayerOneBot() && !jogo.isPlayerOneComplete() && jogo.getPlayerOneRounds() == 3) || ((!jogo.isPlayerTwoBot()) && !jogo.isPlayerTwoComplete() && jogo.getPlayerTwoRounds() == 3))
             return new AguardaMiniJogo(jogo);
 
         return new AguardaJogador(jogo);

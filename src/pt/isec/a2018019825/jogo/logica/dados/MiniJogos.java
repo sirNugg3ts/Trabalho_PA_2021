@@ -11,7 +11,6 @@ import java.util.*;
 public class MiniJogos implements Serializable {
 
     private boolean typeRacerEnabled;
-    private boolean playerOneComplete, playerTwoComplete;
     private boolean nextGame; //true -> typeRacer
                               //false -> MathGame
 
@@ -24,13 +23,13 @@ public class MiniJogos implements Serializable {
     private ArrayList<String> listaPalavras;
     private int palavrasLidas;
     private String fraseEscolhidaTypeRacer;
+    private boolean GameOver;
 
 
 
     public MiniJogos() {
+        GameOver = false;
         palavrasLidas = 0;
-        playerOneComplete = false;
-        playerTwoComplete = false;
         nextGame = false; //comecamos sempre no math game
 
         //obter lista de palavras para o typeracer
@@ -64,25 +63,6 @@ public class MiniJogos implements Serializable {
     }
 
 
-    //boolean checkers
-
-    public boolean isPlayerOneComplete() {
-        return playerOneComplete;
-    }
-
-    public boolean isPlayerTwoComplete() {
-        return playerTwoComplete;
-    }
-
-    //sets
-
-    public void setPlayerOneComplete(boolean playerOneComplete) {
-        this.playerOneComplete = playerOneComplete;
-    }
-
-    public void setPlayerTwoComplete(boolean playerTwoComplete) {
-        this.playerTwoComplete = playerTwoComplete;
-    }
 
     //gets
 
@@ -94,27 +74,17 @@ public class MiniJogos implements Serializable {
         return acertados;
     }
 
+    public boolean isTypeRacerEnabled() {return typeRacerEnabled;}
+
 
     //Game methods
 
     public void startClock() {
         start = System.currentTimeMillis();
         acertados = 0;
+        GameOver = false;
     }
 
-    public boolean sealGame() {
-        if (nextGame){
-            //typeracer
-            nextGame = !nextGame;
-            return acertados == 1; //TODO: condicao para ganhar
-        }
-        else{
-            //mathgame
-            if (typeRacerEnabled)
-                nextGame = !nextGame;
-            return acertados >= 5;
-        }
-    }
 
     public long getTime() {
         return start;
@@ -205,11 +175,15 @@ public class MiniJogos implements Serializable {
     }
 
     public void verificaTypeRacer(String resposta) {
-        if (!fraseEscolhidaTypeRacer.equals(resposta)){
+        if (!fraseEscolhidaTypeRacer.equals(resposta.trim())){
             acertados = -1;
         }else  if ((System.currentTimeMillis() - start >= (fraseEscolhidaTypeRacer.length() * 1000L) / 2))
             acertados = 1;
         else
             acertados = 0;
+    }
+
+    public void setGameOver(boolean b) {
+        GameOver = true;
     }
 }

@@ -16,9 +16,17 @@ public interface IEstado {
 
     IEstado playBot() throws Exception;
 
-    IEstado acabaMiniJogo();
-
     Situacao getSituacaoAtual();
 
     IEstado ignoraMiniJogo();
+
+    IEstado startMiniGame();
+
+    IEstado terminaMiniJogo();
+
+    IEstado recebeResposta(String resposta);
+
+    IEstado recebeResposta(int resposta);
+
+
 }

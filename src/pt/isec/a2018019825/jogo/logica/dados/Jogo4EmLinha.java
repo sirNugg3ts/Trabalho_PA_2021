@@ -18,13 +18,23 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
     StringBuilder historicoAtual;
 
     private char[][] tabuleiro = new char[7][6];
-    private int round;
 
     private Jogador playerOne, playerTwo;
 
     private boolean nextPlayer; //jogador1 true /jogador 2 false
     private boolean winner;
     private boolean empate;
+    private boolean lastAnswerCorrect;
+
+    public boolean isWonMiniGame() {
+        return wonMiniGame;
+    }
+
+    public void setWonMiniGame(boolean wonMiniGame) {
+        this.wonMiniGame = wonMiniGame;
+    }
+
+    private boolean wonMiniGame;
 
     private final MiniJogos minijogos;
 
@@ -33,9 +43,16 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
     public Jogo4EmLinha() {
         historicoJogos = new ArrayList<>();
         minijogos = new MiniJogos();
+        playerOne = new Jogador(true);
+        playerTwo = new Jogador(true);
+    }
+
+    public char[][] getTabuleiro(){
+        return tabuleiro;
     }
 
     public void comeca(String nomeJogador1, String nomeJogador2) {
+        Random random = new Random();
         historicoAtual = new StringBuilder();
         //esvaziar tabuleiro
         for (char[] chars : tabuleiro) Arrays.fill(chars, ' ');
@@ -43,15 +60,22 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
 
         if (nomeJogador1.isEmpty())
             playerOne = new Jogador(true);
-        else
-            playerOne = new Jogador(nomeJogador1);
+        else{
+            if (minijogos.isTypeRacerEnabled())
+                playerOne = new Jogador(nomeJogador1,random.nextBoolean());
+            else
+                playerOne = new Jogador(nomeJogador1,false);
+        }
+
 
         if (nomeJogador2.isEmpty())
             playerTwo = new Jogador(true);
-        else
-            playerTwo = new Jogador(nomeJogador2);
-
-        Random random = new Random();
+        else{
+            if (minijogos.isTypeRacerEnabled())
+                playerTwo = new Jogador(nomeJogador2,random.nextBoolean());
+            else
+                playerTwo = new Jogador(nomeJogador2,false);
+        }
 
         //selecionar aleatoriamente o primeiro
 
@@ -62,7 +86,8 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
         }
 
         nextPlayer = true;
-        round = 0;
+        playerOne.setRondas(0);
+        playerTwo.setRondas(0);
         empate = false;
     }
 
@@ -71,18 +96,25 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
 
     public void limpaColuna(int coluna) {
         Arrays.fill(tabuleiro[coluna], ' ');
-        if (nextPlayer)
+        if (vezJogador1()){
             playerOne.setnPecasDouradas(getPecasDouradasPlayerOne() - 1);
-        else
-            playerTwo.setnPecasDouradas(getPecasDouradasPlayerTwo() - 1);
-        nextPlayer = !nextPlayer;
+            if (playerOne.getRondas() == 4){
+                playerOne.setRondas(1);
+                playerOne.setMiniGameComplete(false);
+        }
+            else
+                playerOne.aumentaJogada();
 
-        if (round > 9) { // reset as rondas, para começar a contar de novo para mini jogo
-            round = 1; //porque jogador 1 ja jogou
-            minijogos.setPlayerOneComplete(false);
-            minijogos.setPlayerTwoComplete(false);
-        } else
-            round++;
+        }else{
+            playerTwo.setnPecasDouradas(getPecasDouradasPlayerTwo() - 1);
+            if (playerTwo.getRondas() == 4){
+                playerTwo.setRondas(1);
+                playerTwo.setMiniGameComplete(false);
+            }
+            else
+                playerTwo.aumentaJogada();
+        }
+        nextPlayer = !nextPlayer;
     }
 
     public void colocaPeca(int coluna) {
@@ -91,13 +123,22 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
         else
             setPeca('R', coluna);
 
+        if (vezJogador1()){
+            if (playerOne.getRondas() == 4){
+                playerOne.setRondas(1);
+                playerOne.setMiniGameComplete(false);
+            }
+            else
+                playerOne.aumentaJogada();
+        }else{
+            if (playerTwo.getRondas() == 4){
+                playerTwo.setRondas(1);
+                playerTwo.setMiniGameComplete(false);
+            }
+            else
+                playerTwo.aumentaJogada();
+        }
         nextPlayer = !nextPlayer;
-        if (round > 9) { // reset as rondas, para começar a contar de novo para mini jogo
-            round = 1;
-            minijogos.setPlayerOneComplete(false);
-            minijogos.setPlayerTwoComplete(false);
-        } else
-            round++;
     }
 
 
@@ -171,10 +212,6 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
             return playerTwo.getNome();
     }
 
-    public int getNRounds() {
-        return round;
-    }
-
     public int getPecasDouradasPlayerOne() {
         return playerOne.getnPecasDouradas();
     }
@@ -223,10 +260,17 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
     }
 
     public void completeMiniGame(boolean jogador) {
-        if (jogador)
-            minijogos.setPlayerOneComplete(true);
-        else
-            minijogos.setPlayerTwoComplete(true);
+        if (jogador){
+            playerOne.setMiniGameComplete(true);
+            if (minijogos.isTypeRacerEnabled())
+                playerOne.invertNextMiniGame();
+        }
+        else{
+            playerTwo.setMiniGameComplete(true);
+            if (minijogos.isTypeRacerEnabled())
+                playerTwo.invertNextMiniGame();
+        }
+
     }
 
 
@@ -243,11 +287,11 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
     }
 
     public boolean isPlayerOneComplete() {
-        return minijogos.isPlayerOneComplete();
+        return playerOne.getMiniGameComplete();
     }
 
     public boolean isPlayerTwoComplete() {
-        return minijogos.isPlayerTwoComplete();
+        return playerTwo.getMiniGameComplete();
     }
 
     public boolean isNextPlayerBot() {
@@ -359,13 +403,16 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
         Object[] objects = (Object[]) m.getSnapShot();
         this.tabuleiro = (char[][]) objects[0];
         this.nextPlayer = (boolean) objects[1];
-        this.round = 0;
+        //TODO: reset as jogadas de quem usou
     }
 
     //funcoes minijogos
 
     public boolean getMiniGame() {
-        return minijogos.getMiniGame();
+        if (vezJogador1())
+            return playerOne.getMiniJogo();
+        else
+            return playerTwo.getMiniJogo();
     }
 
     public void startClock() {
@@ -378,23 +425,6 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
 
     public int getAcertadas() {
         return minijogos.getAcertadas();
-    }
-
-    public boolean sealGame() {
-        if (minijogos.sealGame()) {
-            addPecaDourada(vezJogador1());
-            if (vezJogador1())
-                recorda(playerOne.getNome() + " venceu o minijogo");
-            else
-                recorda(playerTwo.getNome() + " venceu o minijogo");
-            return true;
-        }
-        if (vezJogador1())
-            recorda(playerOne.getNome() + " perdeu o minijogo");
-        else
-            recorda(playerTwo.getNome() + " perdeu o minijogo");
-        skipsTurn();
-        return false;
     }
 
     //typeracer
@@ -421,8 +451,12 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
         return minijogos.getNumber2();
     }
 
-    public boolean validaConta(int resposta) {
-        return minijogos.validaConta(resposta);
+    public void validaConta(int resposta) {
+        if (minijogos.validaConta(resposta)){
+            lastAnswerCorrect = true;
+        }else
+            lastAnswerCorrect = false;
+
     }
 
 
@@ -434,7 +468,36 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
     //others
     public void skipsTurn() {
         nextPlayer = !nextPlayer;
-        round++;
+
     }
 
+
+    public int getPlayerTwoRounds() {
+        return playerTwo.getRondas();
+    }
+
+    public int getPlayerOneRounds() {
+        return playerOne.getRondas();
+    }
+
+    public boolean wonMiniGame() {
+
+        return wonMiniGame;
+    }
+
+    public boolean isPlayerOneBot() {
+        return playerOne.isBot();
+    }
+
+    public boolean isPlayerTwoBot() {
+        return playerTwo.isBot();
+    }
+
+    public boolean isLastAnswerCorrect() {
+        return lastAnswerCorrect;
+    }
+
+    public void setLastAnswerCorrect(boolean lastAnswerCorrect) {
+        this.lastAnswerCorrect = lastAnswerCorrect;
+    }
 }

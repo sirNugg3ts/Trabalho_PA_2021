@@ -14,11 +14,10 @@ public class AguardaMiniJogo extends EstadoAdapter {
         return new Minijogo(jogo);
     }
 
+
     @Override
     public IEstado ignoraMiniJogo() {
         jogo.completeMiniGame(jogo.vezJogador1());
-        if ((!jogo.isPlayerOneComplete() && jogo.getNRounds() == 6) || (!jogo.isPlayerTwoComplete() && jogo.getNRounds() == 7))
-            return new AguardaMiniJogo(jogo);
         return new AguardaJogador(jogo);
     }
 

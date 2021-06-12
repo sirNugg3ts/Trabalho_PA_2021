@@ -37,9 +37,6 @@ public class MaquinaEstados {
         return jogo.getCreditos(player);
     }
 
-    public int getRounds() {
-        return jogo.getNRounds();
-    }
 
     public Situacao getSituacaoAtual() {
         return estadoAtual.getSituacaoAtual();
@@ -95,9 +92,6 @@ public class MaquinaEstados {
         setEstadoAtual(estadoAtual.minijogo());
     }
 
-    public void acabaMiniJogo() {
-        setEstadoAtual(estadoAtual.acabaMiniJogo());
-    }
 
     public void ignoraMiniJogo() {
         setEstadoAtual(estadoAtual.ignoraMiniJogo());
@@ -111,6 +105,10 @@ public class MaquinaEstados {
         caretaker.gravaMemento();
         setEstadoAtual(estadoAtual.jogaPeca(coluna));
         return 0;
+    }
+
+    public boolean colunaCheia(int coluna){
+        return jogo.colunaCheia(coluna);
     }
 
 
@@ -128,6 +126,10 @@ public class MaquinaEstados {
 
     public boolean isNextPlayerBot() {
         return jogo.isNextPlayerBot();
+    }
+
+    public char[][] getTabuleiro(){
+        return jogo.getTabuleiro();
     }
 
     @Override
@@ -181,14 +183,6 @@ public class MaquinaEstados {
         return jogo.getMiniGame();
     }
 
-    public void startClock() {
-        jogo.startClock();
-    }
-
-    public boolean timeOver() {
-        return (System.currentTimeMillis() - jogo.getStartTime() > 30000L) || jogo.getAcertadas() == 5;
-    }
-
 
     //minijogo matematica
     public String getQuestaoMath() {
@@ -206,24 +200,48 @@ public class MaquinaEstados {
         return null;
     }
 
-    public boolean validaConta(int resposta) {
-        return jogo.validaConta(resposta);
-    }
+    public int validaConta(int resposta) {
 
-    public boolean wonMiniGame() {
-        return jogo.sealGame();
+        setEstadoAtual(estadoAtual.recebeResposta(resposta));
+        if (estadoAtual.getSituacaoAtual() != Situacao.MIINIJOGO_MATHGAME && !jogo.wonMiniGame())
+            return -1;
+        else if (estadoAtual.getSituacaoAtual() != Situacao.MIINIJOGO_MATHGAME && !jogo.wonMiniGame())
+            return 2;
+         else{
+             if (jogo.isLastAnswerCorrect())
+                 return 1;
+             else
+                 return 0;
+         }
     }
-
 
     public String getQuestaoTypeRacer() {
         return jogo.getQuestaoTypeRacer();
     }
 
     public void verificaTypeRacer(String resposta) {
+
+        //TODO : FALTA FAZER O MESMO QUE SE FEZ PARA O VALIDA CONTA
+
         jogo.verificaTypeRacer(resposta);
+        if (jogo.getAcertadas() != 1){
+            jogo.skipsTurn();
+            jogo.setWonMiniGame(false);
+        }else{
+            jogo.setWonMiniGame(true);
+            jogo.addPecaDourada(vezJogador1());
+
+        }
+        jogo.completeMiniGame(vezJogador1());
+        setEstadoAtual(estadoAtual.terminaMiniJogo());
     }
 
     public int getAcertados() {
         return jogo.getAcertadas();
     }
+
+    public void startMiniGame() {
+        setEstadoAtual(estadoAtual.startMiniGame());
+    }
+
 }
