@@ -3,7 +3,7 @@ package pt.isec.a2018019825.jogo.logica.memento;
 import java.io.*;
 
 public class Memento implements Serializable {
-    private byte[] snapshot = null;
+    private final byte[] snapshot;
 
     public Memento(Object obj) throws IOException{
         ByteArrayOutputStream baos;

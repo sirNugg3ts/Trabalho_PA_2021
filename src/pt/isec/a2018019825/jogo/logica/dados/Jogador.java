@@ -18,7 +18,7 @@ public class Jogador implements Serializable {
         nPecasDouradas = 0;
         creditos = 5;
         rondas = 0;
-        this.nextMiniGame = jogoAtribuido;
+        this.nextMiniGame = true;
         minigameComplete = false;
         this.isBot = false;
     }

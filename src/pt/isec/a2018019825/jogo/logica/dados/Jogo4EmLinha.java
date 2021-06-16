@@ -4,8 +4,6 @@ import pt.isec.a2018019825.jogo.logica.Operacao;
 import pt.isec.a2018019825.jogo.logica.memento.IMementoOriginator;
 import pt.isec.a2018019825.jogo.logica.memento.Memento;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,7 +22,9 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
     private boolean nextPlayer; //jogador1 true /jogador 2 false
     private boolean winner;
     private boolean empate;
+    private boolean jogoAcabou;
     private boolean lastAnswerCorrect;
+    private boolean wonMiniGame;
 
     public boolean isWonMiniGame() {
         return wonMiniGame;
@@ -34,7 +34,7 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
         this.wonMiniGame = wonMiniGame;
     }
 
-    private boolean wonMiniGame;
+
 
     private final MiniJogos minijogos;
 
@@ -45,6 +45,7 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
         minijogos = new MiniJogos();
         playerOne = new Jogador(true);
         playerTwo = new Jogador(true);
+        jogoAcabou = false;
     }
 
     public char[][] getTabuleiro(){
@@ -66,7 +67,6 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
             else
                 playerOne = new Jogador(nomeJogador1,false);
         }
-
 
         if (nomeJogador2.isEmpty())
             playerTwo = new Jogador(true);
@@ -98,7 +98,7 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
         Arrays.fill(tabuleiro[coluna], ' ');
         if (vezJogador1()){
             playerOne.setnPecasDouradas(getPecasDouradasPlayerOne() - 1);
-            if (playerOne.getRondas() == 4){
+            if (playerOne.getRondas() == 3){
                 playerOne.setRondas(1);
                 playerOne.setMiniGameComplete(false);
         }
@@ -107,7 +107,7 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
 
         }else{
             playerTwo.setnPecasDouradas(getPecasDouradasPlayerTwo() - 1);
-            if (playerTwo.getRondas() == 4){
+            if (playerTwo.getRondas() == 3){
                 playerTwo.setRondas(1);
                 playerTwo.setMiniGameComplete(false);
             }
@@ -124,14 +124,14 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
             setPeca('R', coluna);
 
         if (vezJogador1()){
-            if (playerOne.getRondas() == 4){
+            if (playerOne.getRondas() == 3){
                 playerOne.setRondas(1);
                 playerOne.setMiniGameComplete(false);
             }
             else
                 playerOne.aumentaJogada();
         }else{
-            if (playerTwo.getRondas() == 4){
+            if (playerTwo.getRondas() == 3){
                 playerTwo.setRondas(1);
                 playerTwo.setMiniGameComplete(false);
             }
@@ -250,6 +250,7 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
 
     public void setWinner(boolean player) {
         this.winner = player;
+        this.jogoAcabou = true;
     }
 
     public void addPecaDourada(boolean player) {
@@ -308,53 +309,7 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
         historicoAtual.append("-> " + log + "\n");
     }
 
-    public void sealLog() throws Exception {
-        System.out.println("Vou escrever o ficheiro log");
-        int nNewReplay = 1;
-        File pastaReplays = new File("replays");
 
-        //criar a pasta dos replays
-        if (!pastaReplays.exists())
-            if (!pastaReplays.mkdir())
-                throw new Exception("Erro ao criar pasta de replays");
-
-        File[] ficheiros = pastaReplays.listFiles(File::isFile);
-        long lastModifiedTime = Long.MAX_VALUE;
-        File oldestFile = null;
-
-        File fold = new File("replays/replay5.txt");
-        if (fold.exists())
-            if (!fold.delete())
-                throw new Exception("Erro ao apagar replay5.txt");
-
-
-        for (int i = 4; i > 0; i--) {
-            File f = new File("replays/replay" + i + ".txt");
-            if (f.exists()) {
-                if (!f.renameTo(new File("replays/replay" + (i + 1) + ".txt"))) {
-                    throw new Exception("Erro ao criar ficheiro replay");
-                }
-            }
-        }
-
-        for (int i = 1; i < 6; i++) {
-            File f = new File("replays/replay" + i + ".txt");
-            nNewReplay = i;
-            if (!f.exists()) {
-                break;
-            }
-        }
-
-        File f = new File("replays/replay" + nNewReplay + ".txt");
-
-        if (f.createNewFile()) {
-            FileWriter writer = new FileWriter(f);
-            writer.write(historicoAtual.toString());
-            writer.close();
-        }
-
-        historicoJogos.add(historicoAtual.toString());
-    }
 
     public String getLogAtual() {
         return historicoAtual.toString();
@@ -395,7 +350,7 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
     @Override
     public Memento getMemento() throws IOException {
         //a contagem de grupos de 4 jogadas para acesso aos mini-jogos é colocada a zero.
-        return new Memento(new Object[]{tabuleiro, nextPlayer});
+        return new Memento(new Object[]{tabuleiro, nextPlayer,playerOne,playerTwo});
     }
 
     @Override
@@ -403,8 +358,8 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
         Object[] objects = (Object[]) m.getSnapShot();
         this.tabuleiro = (char[][]) objects[0];
         this.nextPlayer = (boolean) objects[1];
-        //TODO: reset as jogadas de quem usou
     }
+
 
     //funcoes minijogos
 
@@ -467,7 +422,25 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
 
     //others
     public void skipsTurn() {
+        if (vezJogador1()){
+            playerOne.aumentaJogada();
+            if (playerOne.getRondas() == 4)
+                playerOne.setRondas(0);
+        }
+
+        else{
+            playerTwo.aumentaJogada();
+            if (playerTwo.getRondas() == 4)
+                playerTwo.setRondas(0);
+        }
+
+
+
+
+
         nextPlayer = !nextPlayer;
+
+
 
     }
 
@@ -499,5 +472,17 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
 
     public void setLastAnswerCorrect(boolean lastAnswerCorrect) {
         this.lastAnswerCorrect = lastAnswerCorrect;
+    }
+
+    public void acabaJogo() {
+        jogoAcabou = true;
+    }
+
+    public boolean isFinishedGame() {
+        return jogoAcabou;
+    }
+
+    public void endgame() {
+        this.jogoAcabou = true;
     }
 }

@@ -30,7 +30,7 @@ public class MiniJogos implements Serializable {
     public MiniJogos() {
         GameOver = false;
         palavrasLidas = 0;
-        nextGame = false; //comecamos sempre no math game
+        nextGame = false;
 
         //obter lista de palavras para o typeracer
         File ficheiroTypeRacer = new File("typeracer.txt");
@@ -175,9 +175,14 @@ public class MiniJogos implements Serializable {
     }
 
     public void verificaTypeRacer(String resposta) {
+        System.out.println(fraseEscolhidaTypeRacer.equals(resposta.trim()) ? "Certo" : "Errado");
+        System.out.println("Tempo inicial: " + start);
+        System.out.println("Tempo final: " + System.currentTimeMillis());
+        System.out.println("Tempo disponivel: " + (fraseEscolhidaTypeRacer.length() * 1000L)/2);
+        double finish = System.currentTimeMillis() - start;
         if (!fraseEscolhidaTypeRacer.equals(resposta.trim())){
             acertados = -1;
-        }else  if ((System.currentTimeMillis() - start >= (fraseEscolhidaTypeRacer.length() * 1000L) / 2))
+        }else  if (finish <= (fraseEscolhidaTypeRacer.length() * 1000L) / 2)
             acertados = 1;
         else
             acertados = 0;

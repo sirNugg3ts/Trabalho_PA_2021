@@ -1,13 +1,13 @@
 package pt.isec.a2018019825.jogo.iu.gui.estados;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import pt.isec.a2018019825.jogo.iu.gui.ConstantesGUI;
+import pt.isec.a2018019825.jogo.iu.gui.VoltarAtrasPane;
 import pt.isec.a2018019825.jogo.logica.JogoObservavel;
 
 import java.util.ArrayList;
@@ -26,14 +26,40 @@ public class AguardaJogador extends HBox {
 
     Button JogarPecaNormal,JogarPecaDourada,VoltarAtras;
     ButtonsColunas buttoesColunas;
+    Button next;
+
+    Pane voltarAtrasPane;
 
 
     public AguardaJogador(JogoObservavel jogoObservavel){
         this.jogoObservavel = jogoObservavel;
-        botTime();
+
         criaComponentes();
         registaListeners();
         registaObservers();
+        atualiza();
+    }
+
+    private void atualiza() {
+        if (jogoObservavel.getIntPecasDouradas() == 0){
+            JogarPecaDourada.setDisable(true);
+        }else
+            JogarPecaDourada.setDisable(false);
+
+
+        stack.getChildren().clear();
+
+        if (jogoObservavel.isNextPlayerBot())
+            botoesNormais = new HBox(next);
+        else
+            botoesNormais = new HBox(JogarPecaNormal,JogarPecaDourada,VoltarAtras);
+
+
+        stack.getChildren().addAll(botoesNormais,buttoesColunas,voltarAtrasPane);
+        botoesNormais.setVisible(true);
+        buttoesColunas.setVisible(false);
+        voltarAtrasPane.setVisible(false);
+
     }
 
     private void botTime() {
@@ -41,9 +67,10 @@ public class AguardaJogador extends HBox {
             try {
                 jogoObservavel.playBot();
             } catch (Exception e) {
-                //TODO APRESENTAR MENSAGEM DE ERRO
-
-                e.printStackTrace();
+                Alert alerta = new Alert(Alert.AlertType.ERROR);
+                alerta.setHeaderText("Erro!");
+                alerta.setContentText(e.getMessage());
+                alerta.showAndWait();
             }
         }
     }
@@ -52,17 +79,48 @@ public class AguardaJogador extends HBox {
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.CANCELA_JOGADA,evt -> {
             buttoesColunas.setVisible(false);
             botoesNormais.setVisible(true);
+            voltarAtrasPane.setVisible(false);
+            atualiza();
         });
 
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_PLAYPIECE,evt -> {
             buttoesColunas.setVisible(false);
             botoesNormais.setVisible(true);
+            voltarAtrasPane.setVisible(false);
+            atualiza();
+        });
+
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_ENDMINIGAME,evt -> atualiza());
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.RESPONDEMINIGAME,evt -> {
+            if ((int)evt.getNewValue() == -1){
+                atualiza();
+            }
+        });
+
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.CANCELA_VOLTARATRAS,evt -> {
+            buttoesColunas.setVisible(false);
+            botoesNormais.setVisible(true);
+            voltarAtrasPane.setVisible(false);
+        });
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.VOLTARATRAS,evt -> {
+            buttoesColunas.setVisible(false);
+            botoesNormais.setVisible(true);
+            voltarAtrasPane.setVisible(false);
+            atualiza();
+        });
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_CARREGAJOGO,evt -> {
+            buttoesColunas.setVisible(false);
+            botoesNormais.setVisible(true);
+            voltarAtrasPane.setVisible(false);
+            atualiza();
         });
     }
 
     private void registaListeners() {
         JogarPecaNormal.setOnAction((e) -> {botoesNormais.setVisible(false);buttoesColunas.setVisible(true);mode = true;});
         JogarPecaDourada.setOnAction((e)->{botoesNormais.setVisible(false);buttoesColunas.setVisible(true);mode = false;});
+        VoltarAtras.setOnAction(actionEvent -> {botoesNormais.setVisible(false);buttoesColunas.setVisible(false);voltarAtrasPane.setVisible(true);});
+        next.setOnAction(actionEvent -> botTime());
     }
 
     private void criaComponentes() {
@@ -72,11 +130,19 @@ public class AguardaJogador extends HBox {
         JogarPecaDourada = new Button("Jogar Peça Dourada");
         VoltarAtras = new Button("Voltar atrás");
         buttoesColunas = new ButtonsColunas(jogoObservavel);
+        voltarAtrasPane = new VoltarAtrasPane(jogoObservavel);
+        next = new Button("Next");
 
-        botoesNormais = new HBox(JogarPecaNormal,JogarPecaDourada,VoltarAtras);
-        stack.getChildren().addAll(botoesNormais,buttoesColunas);
+        if (jogoObservavel.isNextPlayerBot())
+            botoesNormais = new HBox(next);
+        else
+            botoesNormais = new HBox(JogarPecaNormal,JogarPecaDourada,VoltarAtras);
+
+
+        stack.getChildren().addAll(botoesNormais,buttoesColunas,voltarAtrasPane);
         botoesNormais.setVisible(true);
         buttoesColunas.setVisible(false);
+        voltarAtrasPane.setVisible(false);
 
         getChildren().addAll(stack);
         setAlignment(Pos.CENTER);

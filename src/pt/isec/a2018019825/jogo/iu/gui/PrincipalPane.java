@@ -1,7 +1,12 @@
 package pt.isec.a2018019825.jogo.iu.gui;
 
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import pt.isec.a2018019825.jogo.iu.gui.estados.AguardaJogador;
@@ -16,6 +21,8 @@ public class PrincipalPane extends BorderPane {
     private Connect4Grid tabuleiro;
     Label nomeJogadorAtual;
     Label Creditos;
+    Label pecasDouradas;
+    Label ronda;
     AguardaJogador botoesAguardaJogador;
 
 
@@ -37,6 +44,9 @@ public class PrincipalPane extends BorderPane {
         jogoObservavel.addPropertyChangeListener(PROPRIEDADE_JOGO,(evt -> atualiza()));
         jogoObservavel.addPropertyChangeListener(PROPRIEDADE_INGAME,evt -> atualiza());
         jogoObservavel.addPropertyChangeListener(PROPRIEDADE_PLAYPIECE,evt -> atualiza());
+        jogoObservavel.addPropertyChangeListener(PROPRIEDADE_ENDMINIGAME,evt -> atualiza());
+        jogoObservavel.addPropertyChangeListener(VOLTARATRAS,evt -> atualiza());
+        jogoObservavel.addPropertyChangeListener(REPLAY,evt -> atualiza());
     }
 
     private void atualiza(){
@@ -48,6 +58,9 @@ public class PrincipalPane extends BorderPane {
             nomeJogadorAtual.setText(jogoObservavel.getPlayerTwoName());
         }
         Creditos.setText(jogoObservavel.getActualPlayerCreditos());
+        pecasDouradas.setText(jogoObservavel.getPecasDouradas());
+        ronda.setText(String.valueOf(jogoObservavel.getRondas()));
+        tabuleiro.atualiza();
 
     }
 
@@ -55,7 +68,8 @@ public class PrincipalPane extends BorderPane {
         setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID,null,new BorderWidths(2))));
 
         tabuleiro = new Connect4Grid(jogoObservavel);
-        setCenter(tabuleiro);
+
+
 
         StackPane bottom = new StackPane();
         botoesAguardaJogador = new AguardaJogador(jogoObservavel);
@@ -66,8 +80,18 @@ public class PrincipalPane extends BorderPane {
         HBox topBar = new HBox();
         nomeJogadorAtual = new Label("PlayerName");
         Creditos = new Label("5");
-        topBar.getChildren().addAll(nomeJogadorAtual,Creditos);
-        setTop(topBar);
+        pecasDouradas = new Label("0");
+        ronda = new Label("");
+        topBar.getChildren().addAll(nomeJogadorAtual,Creditos,pecasDouradas,ronda);
+        topBar.setSpacing(5);
+        topBar.setPadding(new Insets(5,5,5,5));
+        VBox centerGame = new VBox(topBar,tabuleiro);
+        setCenter(centerGame);
+        centerGame.setAlignment(Pos.CENTER);
+
+
+
+
     }
 
 

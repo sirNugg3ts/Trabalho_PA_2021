@@ -91,17 +91,15 @@ public class AguardaJogador extends EstadoAdapter {
         if (jogo.verificaVencedor('Y')) { //player 1 ganhou
             jogo.setWinner(true);
             jogo.recorda(jogo.getNomeJogador1() + ": Venceu");
-            jogo.sealLog();
 
             return new FimJogo(jogo);
         } else if (jogo.verificaVencedor('R')) {//player 2 ganhou
             jogo.setWinner(false);
             jogo.recorda(jogo.getNomeJogador2() + ": Venceu");
-            jogo.sealLog();
             return new FimJogo(jogo);
         } else if (jogo.tabuleiroCheio()) {
+            jogo.endgame();
             jogo.recorda("Fim: Empate");// ta cheio, e ninguem ganhou, logo empate
-            jogo.sealLog();
             return new FimJogo(jogo);
         }
         return null;

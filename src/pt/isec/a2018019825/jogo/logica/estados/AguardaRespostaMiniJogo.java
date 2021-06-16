@@ -29,6 +29,23 @@ public class AguardaRespostaMiniJogo extends EstadoAdapter {
     }
 
     @Override
+    public IEstado recebeResposta(String resposta) {
+        jogo.verificaTypeRacer(resposta);
+
+        if (jogo.getAcertadas() != 1){
+            jogo.completeMiniGame(jogo.vezJogador1());
+            jogo.skipsTurn();
+            jogo.setWonMiniGame(false);
+        }else{
+            jogo.completeMiniGame(jogo.vezJogador1());
+            jogo.setWonMiniGame(true);
+            jogo.addPecaDourada(jogo.vezJogador1());
+        }
+
+        return terminaMiniJogo();
+    }
+
+    @Override
     public IEstado terminaMiniJogo() {
 
         if (jogo.wonMiniGame())

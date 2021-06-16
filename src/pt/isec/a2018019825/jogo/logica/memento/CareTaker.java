@@ -1,28 +1,31 @@
 package pt.isec.a2018019825.jogo.logica.memento;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class CareTaker implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private final IMementoOriginator originator;
 
     private Deque<Memento> stackHistorico = new ArrayDeque<>();
+    private Deque<Memento> stackReplay = new ArrayDeque<>();
 
     public CareTaker(IMementoOriginator originator) {
         this.originator = originator;
     }
 
-    public void gravaMemento(){
-        try{
+    public void gravaMemento() throws IOException {
+
             stackHistorico.push(originator.getMemento());
             if (stackHistorico.size()>10)
                 stackHistorico.removeFirst();
 
-        } catch (IOException e) {
-            System.err.println("grava memento: " + e);
-        }
+            stackReplay.push(originator.getMemento());
     }
 
     public void limpaStack(){
@@ -40,6 +43,5 @@ public class CareTaker implements Serializable {
             originator.setMemento(anterior);
 
     }
-
 
 }

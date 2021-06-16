@@ -4,15 +4,20 @@ import pt.isec.a2018019825.jogo.logica.dados.Jogo4EmLinha;
 import pt.isec.a2018019825.jogo.logica.estados.AguardaInicio;
 import pt.isec.a2018019825.jogo.logica.estados.AguardaJogador;
 import pt.isec.a2018019825.jogo.logica.estados.IEstado;
+import pt.isec.a2018019825.jogo.logica.estados.Replay;
 import pt.isec.a2018019825.jogo.logica.memento.CareTaker;
 
-import java.io.IOException;
+import java.io.*;
 
 public class MaquinaEstados {
 
-    IEstado estadoAtual;
-    Jogo4EmLinha jogo;
-    CareTaker caretaker;
+    private IEstado estadoAtual;
+    private Jogo4EmLinha jogo;
+    private CareTaker caretaker;
+
+    //replay
+    private CareTaker tempCaretaker;
+    private Jogo4EmLinha tempJogo;
 
     //construtor
     public MaquinaEstados() {
@@ -36,7 +41,6 @@ public class MaquinaEstados {
     public int getCreditos(boolean player) {
         return jogo.getCreditos(player);
     }
-
 
     public Situacao getSituacaoAtual() {
         return estadoAtual.getSituacaoAtual();
@@ -76,6 +80,30 @@ public class MaquinaEstados {
         return jogo.getAllLogs();
     }
 
+    public boolean colunaCheia(int coluna){
+        return jogo.colunaCheia(coluna);
+    }
+
+    public boolean isNextPlayerBot() {
+        return jogo.isNextPlayerBot();
+    }
+
+    public char[][] getTabuleiro(){
+        return jogo.getTabuleiro();
+    }
+
+    public boolean isTabuleiroCheio() {
+        return jogo.tabuleiroCheio();
+    }
+
+    public boolean getMiniGame() {
+        return jogo.getMiniGame();
+    }
+
+    public int getRondas() {
+        return vezJogador1() ? jogo.getPlayerOneRounds() : jogo.getPlayerTwoRounds();
+    }
+
 
     //transition methods
 
@@ -92,6 +120,9 @@ public class MaquinaEstados {
         setEstadoAtual(estadoAtual.minijogo());
     }
 
+    public void startMiniGame() {
+        setEstadoAtual(estadoAtual.startMiniGame());
+    }
 
     public void ignoraMiniJogo() {
         setEstadoAtual(estadoAtual.ignoraMiniJogo());
@@ -104,38 +135,34 @@ public class MaquinaEstados {
             return -1;
         caretaker.gravaMemento();
         setEstadoAtual(estadoAtual.jogaPeca(coluna));
+        if (estadoAtual.getSituacaoAtual() == Situacao.FIM_JOGO){
+            gravaReplay();
+        }
         return 0;
-    }
-
-    public boolean colunaCheia(int coluna){
-        return jogo.colunaCheia(coluna);
-    }
-
-
-    public void jogaPecaDourada(int coluna) {
-        caretaker.gravaMemento();
-        setEstadoAtual(estadoAtual.jogaPecaDourada(coluna));
-
     }
 
     public void playBot() throws Exception {
         caretaker.gravaMemento();
         setEstadoAtual(estadoAtual.playBot());
+        if (estadoAtual.getSituacaoAtual() == Situacao.FIM_JOGO){
+            gravaReplay();
+        }
+    }
+
+    public void jogaPecaDourada(int coluna) throws IOException {
+        caretaker.gravaMemento();
+        setEstadoAtual(estadoAtual.jogaPecaDourada(coluna));
+
     }
 
 
-    public boolean isNextPlayerBot() {
-        return jogo.isNextPlayerBot();
-    }
 
-    public char[][] getTabuleiro(){
-        return jogo.getTabuleiro();
-    }
+
+   //ToString
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        //DEBUG: sb.append("Rondas Gravadas: " + caretaker.size() + "\n");
         switch (estadoAtual.getSituacaoAtual()) {
             case AGUARDA_INICIO:
                 sb.append("Início de um novo jogo");
@@ -158,30 +185,76 @@ public class MaquinaEstados {
         return sb.toString();
     }
 
-    public void undo() throws Exception {
+    public String tabuleiroToString(){
+        return jogo.tabuleiroToString();
+    }
+
+    //Voltar Atras
+
+    public void undo(boolean jogador) throws Exception {
         caretaker.undo();
-        jogo.removeCredito(vezJogador1());
+        jogo.removeCredito(jogador);
         setEstadoAtual(new AguardaJogador(jogo));
     }
 
-    public void setJogo(String nome) throws Exception {
-        Object[] objects = SaveAndLoad.loadGame(nome);
+    //Carregar Jogo - In Progress
+
+    public void setJogo(File file) throws Exception {
+        Object[] objects = SaveAndLoad.loadGame(file);
         this.jogo = (Jogo4EmLinha) objects[0];
         this.caretaker = (CareTaker) objects[1];
         setEstadoAtual(new AguardaJogador(jogo));
     }
 
-    public void saveGame(String nome) throws IOException {
+    public void saveGame(File nome) throws IOException {
         SaveAndLoad.saveState(jogo, caretaker, nome);
     }
 
-    public boolean isTabuleiroCheio() {
-        return jogo.tabuleiroCheio();
+
+    private void gravaReplay() throws Exception {
+        int nNewReplay = 1;
+        File pastaReplays = new File("replays");
+
+        //criar a pasta dos replays
+        if (!pastaReplays.exists())
+            if (!pastaReplays.mkdir())
+                throw new Exception("Erro ao criar pasta de replays");
+
+        File fold = new File("replays/replay5.dat");
+        if (fold.exists())
+            if (!fold.delete())
+                throw new Exception("Erro ao apagar replay5");
+
+
+        for (int i = 4; i > 0; i--) {
+            File f = new File("replays/replay" + i + ".dat");
+            if (f.exists()) {
+                if (!f.renameTo(new File("replays/replay" + (i + 1) + ".dat"))) {
+                    throw new Exception("Erro ao criar ficheiro replay");
+                }
+            }
+        }
+
+        for (int i = 1; i < 6; i++) {
+            File f = new File("replays/replay" + i + ".dat");
+            nNewReplay = i;
+            if (!f.exists()) {
+                break;
+            }
+        }
+
+        File f = new File("replays/replay" + nNewReplay + ".dat");
+
+        if (f.createNewFile()) {
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
+
+            Object object = caretaker;
+            oos.writeObject(object);
+            oos.close();
+        }
+
     }
 
-    public boolean getMiniGame() {
-        return jogo.getMiniGame();
-    }
 
 
     //minijogo matematica
@@ -205,7 +278,7 @@ public class MaquinaEstados {
         setEstadoAtual(estadoAtual.recebeResposta(resposta));
         if (estadoAtual.getSituacaoAtual() != Situacao.MIINIJOGO_MATHGAME && !jogo.wonMiniGame())
             return -1;
-        else if (estadoAtual.getSituacaoAtual() != Situacao.MIINIJOGO_MATHGAME && !jogo.wonMiniGame())
+        else if (estadoAtual.getSituacaoAtual() != Situacao.MIINIJOGO_MATHGAME && jogo.wonMiniGame())
             return 2;
          else{
              if (jogo.isLastAnswerCorrect())
@@ -220,28 +293,11 @@ public class MaquinaEstados {
     }
 
     public void verificaTypeRacer(String resposta) {
-
-        //TODO : FALTA FAZER O MESMO QUE SE FEZ PARA O VALIDA CONTA
-
-        jogo.verificaTypeRacer(resposta);
-        if (jogo.getAcertadas() != 1){
-            jogo.skipsTurn();
-            jogo.setWonMiniGame(false);
-        }else{
-            jogo.setWonMiniGame(true);
-            jogo.addPecaDourada(vezJogador1());
-
-        }
-        jogo.completeMiniGame(vezJogador1());
-        setEstadoAtual(estadoAtual.terminaMiniJogo());
+        setEstadoAtual(estadoAtual.recebeResposta(resposta));
     }
 
     public int getAcertados() {
         return jogo.getAcertadas();
-    }
-
-    public void startMiniGame() {
-        setEstadoAtual(estadoAtual.startMiniGame());
     }
 
 }

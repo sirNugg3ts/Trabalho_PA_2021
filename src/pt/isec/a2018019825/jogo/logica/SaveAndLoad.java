@@ -6,7 +6,7 @@ import java.io.*;
 
 public class SaveAndLoad {
 
-    public static boolean saveState(Object obj, CareTaker caretaker, String nome) throws IOException {
+    public static boolean saveState(Object obj, CareTaker caretaker, File nome) throws IOException {
 
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nome));
 
@@ -18,7 +18,7 @@ public class SaveAndLoad {
 
     }
 
-    public static Object[] loadGame(String nome) throws Exception {
+    public static Object[] loadGame(File nome) throws Exception {
 
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nome));
 

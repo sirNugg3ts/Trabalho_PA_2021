@@ -28,7 +28,11 @@ public class Connect4IU {
                     break;
                 case AGUARDA_JOGADOR1:
                 case AGUARDA_JOGADOR2:
-                    aguardaJogadorIU();
+                    try {
+                        aguardaJogadorIU();
+                    } catch (IOException e) {
+                        System.err.println(e);
+                    }
                     break;
                 case AGUARDA_MINIJOGO:
                     AguardaMinijogoIU();
@@ -210,7 +214,7 @@ public class Connect4IU {
         return name;
     }
 
-    private void aguardaJogadorIU() {
+    private void aguardaJogadorIU() throws IOException {
         if (me.isNextPlayerBot()) {
             try {
                 me.playBot();
@@ -333,8 +337,8 @@ public class Connect4IU {
             nome = sc.nextLine();
         } while (nome.isEmpty());
 
-        try {
-            me.saveGame(nome);
+        try {//!!! NAO ESTA ALTERADO PARA A NOVA MANEIRA, PASSOU DE STRING PARA FILE
+            me.saveGame(null);
         } catch (IOException e) {
             System.err.println("Erro ao guardar jogo: " + e);
         }
@@ -342,6 +346,7 @@ public class Connect4IU {
 
     private void goBack() {
         int nSnaps;
+        boolean jogador = me.vezJogador1();
         do {
             nSnaps = Utils.pedeInteiro("Quantas rondas?");
             if (nSnaps > me.getNoSnapshots())
@@ -351,7 +356,8 @@ public class Connect4IU {
         } while (nSnaps > me.getNoSnapshots() || nSnaps > me.getCreditos(me.vezJogador1()));
         for (int i = 0; i < nSnaps; i++) {
             try {
-                me.undo();
+
+                me.undo(jogador);
             } catch (Exception e) {
                 System.err.println("Erro ao voltar atras: " + e);
             }
@@ -367,7 +373,8 @@ public class Connect4IU {
         } while (nome.isEmpty());
 
         try {
-            me.setJogo(nome);
+            //!!! isto nao esta corrigido para a nova maneira de ficheiros !!!
+            me.setJogo(null);
         } catch (Exception e) {
             System.err.println("Erro ao ler ficheiro: " + e);
         }

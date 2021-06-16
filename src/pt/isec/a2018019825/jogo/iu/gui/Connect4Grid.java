@@ -42,6 +42,9 @@ public class Connect4Grid extends GridPane {
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_PLAYPIECE, (e) -> {
             atualiza();
         });
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.VOLTARATRAS,evt -> atualiza());
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.REPLAY,evt -> atualiza());
+
     }
 
 
@@ -63,7 +66,6 @@ public class Connect4Grid extends GridPane {
         }
         this.setPadding(new Insets(10));
     }
-
 
     private static class Disc extends Circle{
         private final boolean red;

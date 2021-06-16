@@ -5,7 +5,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import pt.isec.a2018019825.jogo.iu.gui.ConstantesGUI;
 import pt.isec.a2018019825.jogo.logica.JogoObservavel;
 
 public class AguardaInicioPane extends VBox {
@@ -26,49 +25,6 @@ public class AguardaInicioPane extends VBox {
         this.jogoObservavel = jogoObservavel;
         criarVista();
         RegistaListeners();
-    }
-
-
-    private void RegistaListeners() {
-        humanoVShumano.setOnAction((e) -> {
-            iniciarButton.setDisable(false);
-            playerOneName.setDisable(false);
-            playerOneName.setEditable(true);
-            playerTwoName.setDisable(false);
-            playerTwoName.setEditable(true);
-            playerOneName.setText("Player One");
-            playerTwoName.setText("Player Two");
-        });
-
-        humanoVSbot.setOnAction((e) -> {
-            iniciarButton.setDisable(false);
-            playerOneName.setDisable(false);
-            playerOneName.setEditable(true);
-            playerTwoName.setEditable(false);
-            playerTwoName.setDisable(true);
-            playerTwoName.setText("Bot1");
-        });
-
-        botVSbot.setOnAction((e)->{
-            iniciarButton.setDisable(false);
-            playerTwoName.setEditable(false);
-            playerTwoName.setDisable(true);
-            playerOneName.setEditable(false);
-            playerOneName.setDisable(true);
-            playerOneName.setText("Bot1");
-            playerTwoName.setText("Bot2");
-        });
-
-        iniciarButton.setOnAction((e) -> {
-            if (humanoVSbot.isSelected())
-                jogoObservavel.comeca(playerOneName.getText(),"");
-            else if (botVSbot.isSelected())
-                jogoObservavel.comeca("","");
-            else
-                jogoObservavel.comeca(playerOneName.getText(),playerTwoName.getText());
-        });
-
-
     }
 
     private void criarVista() {
@@ -133,14 +89,50 @@ public class AguardaInicioPane extends VBox {
 
 
 
+    }
 
 
+    private void RegistaListeners() {
+        humanoVShumano.setOnAction((e) -> {
+            iniciarButton.setDisable(false);
+            playerOneName.setDisable(false);
+            playerOneName.setEditable(true);
+            playerTwoName.setDisable(false);
+            playerTwoName.setEditable(true);
+            playerOneName.setText("Player One");
+            playerTwoName.setText("Player Two");
+        });
 
+        humanoVSbot.setOnAction((e) -> {
+            iniciarButton.setDisable(false);
+            playerOneName.setDisable(false);
+            playerOneName.setEditable(true);
+            playerTwoName.setEditable(false);
+            playerTwoName.setDisable(true);
+            playerTwoName.setText("Bot1");
+        });
 
+        botVSbot.setOnAction((e)->{
+            iniciarButton.setDisable(false);
+            playerTwoName.setEditable(false);
+            playerTwoName.setDisable(true);
+            playerOneName.setEditable(false);
+            playerOneName.setDisable(true);
+            playerOneName.setText("Bot1");
+            playerTwoName.setText("Bot2");
+        });
 
-
-
+        iniciarButton.setOnAction((e) -> {
+            if (humanoVSbot.isSelected())
+                jogoObservavel.comeca(playerOneName.getText(),"");
+            else if (botVSbot.isSelected())
+                jogoObservavel.comeca("","");
+            else
+                jogoObservavel.comeca(playerOneName.getText(),playerTwoName.getText());
+        });
 
 
     }
+
+
 }
