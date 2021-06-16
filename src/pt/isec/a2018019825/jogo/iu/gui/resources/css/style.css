@@ -1,0 +1,43 @@
+.button{
+    -fx-font-family: "Courier New";
+}
+
+#PanePrincipal{
+    -fx-background-color: linear-gradient(from 0% 100% to 100% 0%, #14dca3, #0bc7f6);
+}
+
+#BigLabel{
+    -fx-font-family: "Segoe UI Light" ;
+    -fx-font-size: 25pt;
+}
+
+#TopBarInfoJogo{
+    -fx-spacing: 50;
+}
+
+#tabuleiro_grid{
+    -fx-background-color: rgba(37, 99, 205, 0.7);
+    -fx-background-radius: 40;
+    -fx-background-insets: 10;
+}
+#barra_estado_jogo{
+    -fx-background-color: rgba(255, 255, 255, 0.45);
+    -fx-spacing: 50;
+}
+
+#info_voltar_atras{
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 15pt;
+}
+
+#questao_minijogo{
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 15pt;
+    -fx-alignment: center;
+}
+
+#minijogo{
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11pt;
+    -fx-alignment: center;
+}
