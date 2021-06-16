@@ -1,5 +1,6 @@
 package pt.isec.a2018019825.jogo.iu.gui;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -37,12 +38,16 @@ public class VoltarAtrasPane extends VBox {
 
     private void criaVista() {
         text = new Label("Quantas rondas deseja voltar atrás?");
+        text.setId("info_voltar_atras");
         rondasDisponiveis = new Label("Rondas disponiveis: " + jogoObservavel.getRondasBackDisponiveis());
+        rondasDisponiveis.setId("info_voltar_atras");
         input = new TextField("");
         submit = new Button("OK");
         cancelar = new Button("Cancelar");
-        HBox inputbox = new HBox(input,submit,cancelar);
-        getChildren().addAll(text,rondasDisponiveis,inputbox);
+        HBox inputbox = new HBox(submit,cancelar);
+        inputbox.setSpacing(5);
+        inputbox.setPadding(new Insets(5));
+        getChildren().addAll(text,rondasDisponiveis,input,inputbox);
 
     }
 
@@ -50,7 +55,7 @@ public class VoltarAtrasPane extends VBox {
         cancelar.setOnAction(actionEvent -> jogoObservavel.cancelaVoltarAtras());
         submit.setOnAction(actionEvent -> {
             if (input.getText().matches("[0-9]+")){
-                if (Integer.parseInt(input.getText()) > Integer.parseInt(jogoObservavel.getRondasBackDisponiveis())){
+                if (Integer.parseInt(input.getText()) > Integer.parseInt(jogoObservavel.getRondasBackDisponiveis()) || Integer.parseInt(input.getText()) > jogoObservavel.getCreditos() ){
                     input.setText("");
                 }else{
                     try {

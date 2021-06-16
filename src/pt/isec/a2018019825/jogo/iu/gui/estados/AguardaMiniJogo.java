@@ -1,7 +1,9 @@
 package pt.isec.a2018019825.jogo.iu.gui.estados;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -10,17 +12,17 @@ import pt.isec.a2018019825.jogo.logica.JogoObservavel;
 
 public class AguardaMiniJogo extends VBox {
     JogoObservavel jogoObservavel;
-    HBox buttoes;
 
     Label playerName;
+    HBox box;
     Button yes,no;
+    ButtonBar buttons;
 
     public AguardaMiniJogo(JogoObservavel jogoObservavel) {
         this.jogoObservavel = jogoObservavel;
         criaVista();
         registaListeners();
         registaObservers();
-        atualizar();
     }
 
     private void registaObservers() {
@@ -29,10 +31,10 @@ public class AguardaMiniJogo extends VBox {
     }
 
     private void atualizar() {
-        if (jogoObservavel.vezJogador1()){
-            playerName.setText(jogoObservavel.getPlayerOneName() + ", pode jogar um minijogo para ganhar uma peça dourada\n Jogar?");
-        }else
-            playerName.setText(jogoObservavel.getPlayerTwoName() + ", pode jogar um minijogo para ganhar uma peça dourada\n Jogar?");
+      getChildren().clear();
+      criaVista();
+      registaListeners();
+      registaObservers();
     }
 
     private void registaListeners() {
@@ -47,17 +49,24 @@ public class AguardaMiniJogo extends VBox {
 
     private void criaVista() {
         if (jogoObservavel.vezJogador1()){
-            playerName = new Label(jogoObservavel.getPlayerOneName() + ", pode jogar um minijogo para ganhar uma peça dourada\n Jogar?");
+            playerName = new Label(jogoObservavel.getPlayerOneName() + ", pode jogar um minijogo para ganhar uma peça dourada Jogar?");
         }else
-            playerName = new Label(jogoObservavel.getPlayerTwoName() + ", pode jogar um minijogo para ganhar uma peça dourada\n Jogar?");
+            playerName = new Label(jogoObservavel.getPlayerTwoName() + ", pode jogar um minijogo para ganhar uma peça dourada Jogar?");
+        playerName.setId("questao_minijogo");
 
-        playerName.setAlignment(Pos.CENTER);
+        buttons = new ButtonBar();
         yes = new Button("Sim");
-        no = new Button("No");
-        buttoes = new HBox(yes,no);
-        buttoes.setAlignment(Pos.CENTER);
+        no = new Button("Não");
+        buttons.getButtons().addAll(yes,no);
 
-        getChildren().addAll(playerName,buttoes);
+        buttons.setPadding(new Insets(5));
+
+        box= new HBox(buttons);
+        box.setAlignment(Pos.CENTER);
+        box.setPadding(new Insets(5));
+
+        getChildren().addAll(playerName,box);
+
         setAlignment(Pos.CENTER);
     }
 }

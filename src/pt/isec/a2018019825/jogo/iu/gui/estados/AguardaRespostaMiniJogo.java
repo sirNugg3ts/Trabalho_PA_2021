@@ -1,5 +1,6 @@
 package pt.isec.a2018019825.jogo.iu.gui.estados;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -11,7 +12,7 @@ import pt.isec.a2018019825.jogo.iu.gui.ConstantesGUI;
 import pt.isec.a2018019825.jogo.logica.JogoObservavel;
 import pt.isec.a2018019825.jogo.logica.Situacao;
 
-public class Minijogo extends BorderPane {
+public class AguardaRespostaMiniJogo extends BorderPane {
 
     JogoObservavel jogoObservavel;
 
@@ -22,7 +23,7 @@ public class Minijogo extends BorderPane {
 
     Pane paneJogo;
 
-    public Minijogo(JogoObservavel jogoObservavel) {
+    public AguardaRespostaMiniJogo(JogoObservavel jogoObservavel) {
         this.jogoObservavel = jogoObservavel;
         criaVista();
         registaObserver();
@@ -52,6 +53,8 @@ public class Minijogo extends BorderPane {
         NCorretas = new Label();
         setTop(NCorretas);
         setCenter(gameBox);
+        questao.setId("minijogo");
+        answer.setPadding(new Insets(5));
     }
 
 
@@ -82,6 +85,7 @@ public class Minijogo extends BorderPane {
 
         private void registaObserver() {
             jogoObservavel.addPropertyChangeListener(ConstantesGUI.RESPONDEMINIGAME,evt -> atualiza());
+
         }
 
         private void atualiza(){

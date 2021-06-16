@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import pt.isec.a2018019825.jogo.iu.gui.estados.*;
+import pt.isec.a2018019825.jogo.iu.gui.resources.CSSManager;
 import pt.isec.a2018019825.jogo.logica.JogoObservavel;
 import pt.isec.a2018019825.jogo.logica.MaquinaEstados;
 import pt.isec.a2018019825.jogo.logica.Situacao;
@@ -26,10 +27,15 @@ public class Connect4IU_Grafico extends BorderPane {
     private AguardaInicioPane aguardaInicioPane;
 
     private AguardaMiniJogo aguardaMiniJogo;
-    private Minijogo minijogoPane;
+    private AguardaRespostaMiniJogo aguardaRespostaMiniJogoPane;
     private FimJogo fimJogoPane;
     private StackPane stack;
     private MenuBar menu;
+
+    MenuItem carrega;
+    MenuItem save;
+
+    MenuItem PrideMode;
 
     public Connect4IU_Grafico(){
         comeca();
@@ -37,6 +43,7 @@ public class Connect4IU_Grafico extends BorderPane {
 
     private void comeca(){
         jogoObservavel = new JogoObservavel(new MaquinaEstados());
+        CSSManager.setCSS(this,"style.css");
         criaComponentes();
         disporVista();
         registaObservador();
@@ -49,14 +56,20 @@ public class Connect4IU_Grafico extends BorderPane {
         menu = new MenuBar();
 
         Menu jogoMenu = new Menu("_File");
+        Menu specialMode = new Menu(" ");
 
-        MenuItem carrega = new MenuItem("Carregar Jogo / Replay");
-        MenuItem save = new MenuItem("Guardar Jogo");
+        carrega = new MenuItem("Carregar Jogo / Replay");
+        save = new MenuItem("Guardar Jogo");
         jogoMenu.getItems().addAll(carrega,save);
-        menu.getMenus().add(jogoMenu);
+        menu.getMenus().addAll(jogoMenu,specialMode);
         carrega.setOnAction(new lerObjSave());
         save.setOnAction(new GuardarObjListener());
+        save.setDisable(true);
 
+        PrideMode = new MenuItem("Pride Mode");
+
+        specialMode.getItems().addAll(PrideMode);
+        PrideMode.setOnAction(actionEvent -> ConstantesGUI.SpecialMode = !ConstantesGUI.SpecialMode);
     }
 
     private void disporVista() {
@@ -65,17 +78,23 @@ public class Connect4IU_Grafico extends BorderPane {
         stack.getChildren().addAll(aguardaInicioPane);
         setTop(menu);
         setCenter(stack);
+
+        this.setId("PanePrincipal");
     }
 
 
     private void registaObservador(){
 
+
+
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.COMECANOVOJOGO,evt -> {
             stack.getChildren().clear();
             comeca();
+            save.setDisable(false);
         });
 
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.REPLAY,evt -> {
+            save.setDisable(true);
             stack.getChildren().clear();
             panePrincipal = new PrincipalPane(jogoObservavel);
 
@@ -90,77 +109,84 @@ public class Connect4IU_Grafico extends BorderPane {
             }
         });
 
-
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_CARREGAJOGO,evt -> {
             stack.getChildren().clear();
             panePrincipal = new PrincipalPane(jogoObservavel);
             aguardaMiniJogo = new AguardaMiniJogo(jogoObservavel);
-            minijogoPane = new Minijogo(jogoObservavel);
+            aguardaRespostaMiniJogoPane = new AguardaRespostaMiniJogo(jogoObservavel);
             fimJogoPane = new FimJogo(jogoObservavel);
-            stack.getChildren().addAll(panePrincipal,aguardaMiniJogo,minijogoPane,fimJogoPane);
+            stack.getChildren().addAll(panePrincipal,aguardaMiniJogo, aguardaRespostaMiniJogoPane,fimJogoPane);
 
+            save.setDisable(false);
 
 
             panePrincipal.setVisible(true);
             aguardaInicioPane.setVisible(false);
             aguardaMiniJogo.setVisible(false);
-            minijogoPane.setVisible(false);
+            aguardaRespostaMiniJogoPane.setVisible(false);
             fimJogoPane.setVisible(false);
         });
 
-        //mudar do configura para o jogo em si
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_JOGO, (e) -> {
-
+            stack.getChildren().clear();
             panePrincipal = new PrincipalPane(jogoObservavel);
             aguardaMiniJogo = new AguardaMiniJogo(jogoObservavel);
-            minijogoPane = new Minijogo(jogoObservavel);
+            aguardaRespostaMiniJogoPane = new AguardaRespostaMiniJogo(jogoObservavel);
             fimJogoPane = new FimJogo(jogoObservavel);
-            stack.getChildren().addAll(panePrincipal,aguardaMiniJogo,minijogoPane,fimJogoPane);
+            stack.getChildren().addAll(panePrincipal,aguardaMiniJogo, aguardaRespostaMiniJogoPane,fimJogoPane);
 
             panePrincipal.setVisible(true);
             aguardaInicioPane.setVisible(false);
             aguardaMiniJogo.setVisible(false);
-            minijogoPane.setVisible(false);
+            aguardaRespostaMiniJogoPane.setVisible(false);
             fimJogoPane.setVisible(false);
+            save.setDisable(false);
         });
 
-        //verificar o estado
+
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_PLAYPIECE, evt -> {
             switch (jogoObservavel.getSituacao()){
                 case FIM_JOGO:{
+                    save.setDisable(true);
                     panePrincipal.setVisible(false);
                     fimJogoPane.setVisible(true);
                     break;
                 }
 
                 case AGUARDA_MINIJOGO:{
+                    save.setDisable(true);
                     panePrincipal.setVisible(false);
                     aguardaMiniJogo.setVisible(true);
                     break;
                 }
+                default:
+                    save.setDisable(false);
+                    break;
 
             }
+
         });
 
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_CHOOSEMINIGAME,evt -> {
+            save.setDisable(true);
             if ((int)evt.getNewValue() == -1){
                 aguardaMiniJogo.setVisible(false);
                 panePrincipal.setVisible(true);
             }else{
                 aguardaMiniJogo.setVisible(false);
                 panePrincipal.setVisible(false);
-                minijogoPane.setVisible(true);
+                aguardaRespostaMiniJogoPane.setVisible(true);
             }
         });
 
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_ENDMINIGAME, evt -> {
-            minijogoPane.setVisible(false);
+            save.setDisable(false);
+            aguardaRespostaMiniJogoPane.setVisible(false);
             panePrincipal.setVisible(true);
-
-            System.out.println(jogoObservavel.getSituacao());
 
             switch (jogoObservavel.getSituacao()){
                 case AGUARDA_MINIJOGO:{
+                    save.setDisable(true);
                     panePrincipal.setVisible(false);
                     aguardaMiniJogo.setVisible(true);
                     break;
@@ -169,16 +195,16 @@ public class Connect4IU_Grafico extends BorderPane {
         });
 
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.VOLTARATRAS,evt -> {
+            save.setDisable(false);
             switch (jogoObservavel.getSituacao()){
                 case AGUARDA_MINIJOGO:{
+                    save.setDisable(true);
                     panePrincipal.setVisible(false);
                     aguardaMiniJogo.setVisible(true);
                     break;
                 }
-
             }
         });
-
     }
 
     private class GuardarObjListener implements EventHandler<ActionEvent> {

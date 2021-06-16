@@ -127,10 +127,6 @@ public class JogoObservavel {
         return  me.getNPecasDouradas(vezJogador1());
     }
 
-    public int getRondas(){
-        return  me.getRondas();
-    }
-
     public String getRondasBackDisponiveis() {
         return String.valueOf(me.getNoSnapshots());
     }
@@ -174,13 +170,13 @@ public class JogoObservavel {
         me.saveGame(selectedFile);
     }
 
-    public String tabuleiroToString() {
-        return me.tabuleiroToString();
-    }
-
     public void replay() throws IOException, ClassNotFoundException {
 
         me.replay();
         propertyChangeSupport.firePropertyChange(ConstantesGUI.REPLAY,null,1);
+    }
+
+    public int getCreditos() {
+        return me.getCreditos(vezJogador1());
     }
 }

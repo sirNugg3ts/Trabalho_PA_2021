@@ -72,6 +72,7 @@ public class AguardaInicioPane extends VBox {
         this.setAlignment(Pos.CENTER);
         this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, new BorderWidths(2))));
         this.setPadding(new Insets(10));
+
     }
 
     private void RegistaListeners() {

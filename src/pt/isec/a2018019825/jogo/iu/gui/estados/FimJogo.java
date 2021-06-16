@@ -1,6 +1,7 @@
 package pt.isec.a2018019825.jogo.iu.gui.estados;
 
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -35,11 +36,16 @@ public class FimJogo extends VBox {
 
     private void criaVista() {
         info = new Label();
+        info.setId("BigLabel");
         novoJogo = new Button("Novo Jogo");
         sair = new Button("Sair");
 
         HBox butoes = new HBox(novoJogo,sair);
+        butoes.setSpacing(10);
         getChildren().addAll(info,butoes);
+        info.setAlignment(Pos.CENTER);
+        butoes.setAlignment(Pos.CENTER);
+        this.setAlignment(Pos.CENTER);
     }
 
     private void registaListeners() {

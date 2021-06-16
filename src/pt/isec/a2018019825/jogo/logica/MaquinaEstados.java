@@ -12,10 +12,6 @@ public class MaquinaEstados {
     private Jogo4EmLinha jogo;
     private CareTaker caretaker;
 
-    //replay
-    private CareTaker tempCaretaker;
-    private Jogo4EmLinha tempJogo;
-
     //construtor
     public MaquinaEstados() {
         jogo = new Jogo4EmLinha();
@@ -97,11 +93,6 @@ public class MaquinaEstados {
         return jogo.getMiniGame();
     }
 
-    public int getRondas() {
-        return vezJogador1() ? jogo.getPlayerOneRounds() : jogo.getPlayerTwoRounds();
-    }
-
-
     //transition methods
 
     public void comeca(String nomeJogador1, String nomeJogador2) {
@@ -124,7 +115,6 @@ public class MaquinaEstados {
     public void ignoraMiniJogo() {
         setEstadoAtual(estadoAtual.ignoraMiniJogo());
     }
-
 
     public int jogaPeca(int coluna) throws Exception {
 
@@ -152,9 +142,6 @@ public class MaquinaEstados {
 
     }
 
-
-
-
    //ToString
 
     @Override
@@ -180,10 +167,6 @@ public class MaquinaEstados {
                 sb.append("Fim do jogo\n");
         }
         return sb.toString();
-    }
-
-    public String tabuleiroToString(){
-        return jogo.tabuleiroToString();
     }
 
     //Voltar Atras

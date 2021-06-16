@@ -1,10 +1,12 @@
 package pt.isec.a2018019825.jogo.iu.gui;
 
 import javafx.geometry.Insets;
-import javafx.scene.layout.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import pt.isec.a2018019825.jogo.iu.gui.resources.ImageLoader;
 import pt.isec.a2018019825.jogo.logica.JogoObservavel;
 
 public class Connect4Grid extends GridPane {
@@ -24,18 +26,11 @@ public class Connect4Grid extends GridPane {
         atualiza();
     }
 
-
     private void criarVista() {
-        setHgap(5);
         setVgap(5);
-        this.setMinWidth(TILE_SIZE*(grid.length+1));
-        this.setMinHeight(TILE_SIZE*(grid[0].length+1));
-        this.setMaxWidth(TILE_SIZE*(grid.length+1));
-        this.setMaxHeight(TILE_SIZE*(grid[0].length+1));
-        setBorder(new Border(new BorderStroke(Color.DEEPSKYBLUE, BorderStrokeStyle.DOTTED,new CornerRadii(50),new BorderWidths(2))));
-        setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE,new CornerRadii(50),null)));
-
-
+        setHgap(5);
+        setPadding(new Insets(10,20,20,20));
+        setId("tabuleiro_grid");
     }
 
     private void registarObservador() {
@@ -62,24 +57,35 @@ public class Connect4Grid extends GridPane {
                 this.add(grid[x][y],x,(tabuleiro.length)-y);
             }
         }
-        this.setPadding(new Insets(10));
     }
 
     private static class Disc extends Circle{
         private final boolean red;
         public Disc(boolean red){
-            super(TILE_SIZE / 2, red ? Color.RED : Color.YELLOW);
+            super(TILE_SIZE / 2);
             this.red = red;
+            if (red){
+                if (ConstantesGUI.SpecialMode){
+                    setFill(new ImagePattern(ImageLoader.getImage("flag1.png")));
+                }else
+                    setFill(Color.YELLOW);
+            }
+            else{
+                if (ConstantesGUI.SpecialMode)
+                    setFill(new ImagePattern(ImageLoader.getImage("flag2.png")));
+                else
+                    setFill(Color.RED);
+            }
 
             setCenterX(TILE_SIZE / 2);
             setCenterY(TILE_SIZE / 2);
         }
         public Disc(int transparent){
-            super(TILE_SIZE / 2, Color.WHITE);
+            super(TILE_SIZE /2, Color.WHITE);
             this.red = false;
 
-            setCenterX(TILE_SIZE / 2);
-            setCenterY(TILE_SIZE / 2);
+            setCenterX(TILE_SIZE /2);
+            setCenterY(TILE_SIZE /2);
         }
     }
 }

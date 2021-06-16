@@ -11,7 +11,6 @@ public class FimJogo extends EstadoAdapter {
 
     @Override
     public IEstado termina(boolean end) {
-
         if (!end)
             return new AguardaInicio(jogo);
         return null;

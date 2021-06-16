@@ -1,13 +1,10 @@
 package pt.isec.a2018019825.jogo.iu.gui;
 
-import java.beans.PropertyChangeEvent;
-
 public class ConstantesGUI {
 
-
-
-
     private ConstantesGUI(){}
+
+    public static boolean SpecialMode = false;
 
     //PROPRIEDADES
     public static final String PROPRIEDADE_JOGO = "JOGO";
