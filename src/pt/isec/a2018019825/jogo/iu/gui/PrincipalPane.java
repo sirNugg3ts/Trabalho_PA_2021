@@ -4,12 +4,10 @@ package pt.isec.a2018019825.jogo.iu.gui;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import pt.isec.a2018019825.jogo.iu.gui.estados.AguardaJogador;
+import pt.isec.a2018019825.jogo.iu.gui.estados.Replay;
 import pt.isec.a2018019825.jogo.logica.JogoObservavel;
 import pt.isec.a2018019825.jogo.logica.Situacao;
 
@@ -24,6 +22,8 @@ public class PrincipalPane extends BorderPane {
     Label pecasDouradas;
     Label ronda;
     AguardaJogador botoesAguardaJogador;
+    StackPane bottom;
+    Replay replay;
 
 
     public PrincipalPane(JogoObservavel jogoObservavel){
@@ -69,12 +69,18 @@ public class PrincipalPane extends BorderPane {
 
         tabuleiro = new Connect4Grid(jogoObservavel);
 
+        bottom = new StackPane();
+        if (jogoObservavel.getSituacao() == Situacao.REPLAY){
+            replay = new Replay(jogoObservavel);
+            bottom.getChildren().addAll(replay);
+            setBottom(replay);
+        }else{
+            botoesAguardaJogador = new AguardaJogador(jogoObservavel);
+            bottom.getChildren().add(botoesAguardaJogador);
+            bottom.setAlignment(Pos.CENTER);
+            setBottom(bottom);
+        }
 
-
-        StackPane bottom = new StackPane();
-        botoesAguardaJogador = new AguardaJogador(jogoObservavel);
-        bottom.getChildren().add(botoesAguardaJogador);
-        setBottom(bottom);
 
         //Info do jogo
         HBox topBar = new HBox();
@@ -88,9 +94,6 @@ public class PrincipalPane extends BorderPane {
         VBox centerGame = new VBox(topBar,tabuleiro);
         setCenter(centerGame);
         centerGame.setAlignment(Pos.CENTER);
-
-
-
 
     }
 

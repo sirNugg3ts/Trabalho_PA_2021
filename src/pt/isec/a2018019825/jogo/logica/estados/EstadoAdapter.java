@@ -64,4 +64,9 @@ public abstract class EstadoAdapter implements IEstado {
     public IEstado playBot() throws Exception {
         return this;
     }
+
+    @Override
+    public IEstado replay() {
+        return this;
+    }
 }

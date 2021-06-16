@@ -161,7 +161,13 @@ public class JogoObservavel {
 
     public void lerJogo(File selectedFile) throws Exception {
         me.setJogo(selectedFile);
-        propertyChangeSupport.firePropertyChange(ConstantesGUI.PROPRIEDADE_CARREGAJOGO,null,1);
+        if (me.getSituacaoAtual() == Situacao.REPLAY){
+           propertyChangeSupport.firePropertyChange(ConstantesGUI.REPLAY,null,1);
+        }
+        else{
+            propertyChangeSupport.firePropertyChange(ConstantesGUI.PROPRIEDADE_CARREGAJOGO,null,1);
+        }
+
     }
 
     public void gravaJogo(File selectedFile) throws IOException {
@@ -170,5 +176,11 @@ public class JogoObservavel {
 
     public String tabuleiroToString() {
         return me.tabuleiroToString();
+    }
+
+    public void replay() throws IOException, ClassNotFoundException {
+
+        me.replay();
+        propertyChangeSupport.firePropertyChange(ConstantesGUI.REPLAY,null,1);
     }
 }

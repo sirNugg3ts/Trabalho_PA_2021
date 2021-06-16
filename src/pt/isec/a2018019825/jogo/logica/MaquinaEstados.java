@@ -1,10 +1,7 @@
 package pt.isec.a2018019825.jogo.logica;
 
 import pt.isec.a2018019825.jogo.logica.dados.Jogo4EmLinha;
-import pt.isec.a2018019825.jogo.logica.estados.AguardaInicio;
-import pt.isec.a2018019825.jogo.logica.estados.AguardaJogador;
-import pt.isec.a2018019825.jogo.logica.estados.IEstado;
-import pt.isec.a2018019825.jogo.logica.estados.Replay;
+import pt.isec.a2018019825.jogo.logica.estados.*;
 import pt.isec.a2018019825.jogo.logica.memento.CareTaker;
 
 import java.io.*;
@@ -203,7 +200,13 @@ public class MaquinaEstados {
         Object[] objects = SaveAndLoad.loadGame(file);
         this.jogo = (Jogo4EmLinha) objects[0];
         this.caretaker = (CareTaker) objects[1];
-        setEstadoAtual(new AguardaJogador(jogo));
+        if (this.jogo.isFinishedGame()){
+            caretaker.gravaMemento();
+            caretaker.startReplay();
+            setEstadoAtual(new Replay(jogo));
+        }else{
+            setEstadoAtual(new AguardaJogador(jogo));
+        }
     }
 
     public void saveGame(File nome) throws IOException {
@@ -248,7 +251,7 @@ public class MaquinaEstados {
         if (f.createNewFile()) {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
 
-            Object object = caretaker;
+            Object[] object = {jogo,caretaker};
             oos.writeObject(object);
             oos.close();
         }
@@ -300,4 +303,12 @@ public class MaquinaEstados {
         return jogo.getAcertadas();
     }
 
+    public void replay() throws IOException, ClassNotFoundException {
+        try {
+            caretaker.startReplay();
+            setEstadoAtual(estadoAtual.replay());
+        } catch (Exception e) {
+
+        }
+    }
 }

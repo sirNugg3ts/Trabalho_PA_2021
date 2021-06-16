@@ -14,21 +14,23 @@ import javafx.stage.FileChooser;
 import pt.isec.a2018019825.jogo.iu.gui.estados.*;
 import pt.isec.a2018019825.jogo.logica.JogoObservavel;
 import pt.isec.a2018019825.jogo.logica.MaquinaEstados;
+import pt.isec.a2018019825.jogo.logica.Situacao;
 
 import java.io.File;
 import java.io.IOException;
 
 public class Connect4IU_Grafico extends BorderPane {
 
+    private PrincipalPane panePrincipal;
+
     private JogoObservavel jogoObservavel;
     private AguardaInicioPane aguardaInicioPane;
-    private PrincipalPane panePrincipal;
+
     private AguardaMiniJogo aguardaMiniJogo;
     private Minijogo minijogoPane;
     private FimJogo fimJogoPane;
     private StackPane stack;
     private MenuBar menu;
-    private Replay replay;
 
     public Connect4IU_Grafico(){
         comeca();
@@ -49,13 +51,11 @@ public class Connect4IU_Grafico extends BorderPane {
 
         Menu jogoMenu = new Menu("_File");
 
-        MenuItem carrega = new MenuItem("Carregar Jogo");
-        MenuItem carregaReplay = new MenuItem("Carrega Replay");
+        MenuItem carrega = new MenuItem("Carregar Jogo / Replay");
         MenuItem save = new MenuItem("Guardar Jogo");
-        jogoMenu.getItems().addAll(carrega,carregaReplay,save);
+        jogoMenu.getItems().addAll(carrega,save);
         menu.getMenus().add(jogoMenu);
         carrega.setOnAction(new lerObjSave());
-        //carregaReplay.setOnAction(new LerObjListener());
         save.setOnAction(new GuardarObjListener());
 
     }
@@ -77,13 +77,20 @@ public class Connect4IU_Grafico extends BorderPane {
         });
 
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.REPLAY,evt -> {
+            stack.getChildren().clear();
             panePrincipal = new PrincipalPane(jogoObservavel);
-            replay = new Replay(jogoObservavel);
-            stack.getChildren().addAll(panePrincipal,replay);
-            panePrincipal.setVisible(true);
-            replay.setVisible(true);
 
+            stack.getChildren().addAll(panePrincipal);
+            panePrincipal.setVisible(true);
+
+            if (jogoObservavel.getSituacao() == Situacao.FIM_JOGO){
+                fimJogoPane = new FimJogo(jogoObservavel);
+                stack.getChildren().addAll(fimJogoPane);
+                panePrincipal.setVisible(false);
+                fimJogoPane.setVisible(true);
+            }
         });
+
 
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_CARREGAJOGO,evt -> {
             stack.getChildren().clear();
@@ -213,4 +220,6 @@ public class Connect4IU_Grafico extends BorderPane {
             }
         }
     }
+
+
 }

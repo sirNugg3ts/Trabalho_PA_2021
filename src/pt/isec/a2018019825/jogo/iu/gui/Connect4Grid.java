@@ -43,8 +43,6 @@ public class Connect4Grid extends GridPane {
             atualiza();
         });
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.VOLTARATRAS,evt -> atualiza());
-        jogoObservavel.addPropertyChangeListener(ConstantesGUI.REPLAY,evt -> atualiza());
-
     }
 
 

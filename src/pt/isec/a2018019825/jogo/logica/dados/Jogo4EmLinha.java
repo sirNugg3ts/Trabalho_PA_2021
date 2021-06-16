@@ -484,5 +484,6 @@ public class Jogo4EmLinha implements Serializable, IMementoOriginator {
 
     public void endgame() {
         this.jogoAcabou = true;
+        this.empate = true;
     }
 }

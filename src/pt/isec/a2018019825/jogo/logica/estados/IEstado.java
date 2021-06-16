@@ -28,5 +28,7 @@ public interface IEstado {
 
     IEstado recebeResposta(int resposta);
 
+    IEstado replay();
+
 
 }

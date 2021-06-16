@@ -44,4 +44,10 @@ public class CareTaker implements Serializable {
 
     }
 
+    public void startReplay() throws Exception {
+        Memento next = stackReplay.removeLast();
+        originator.setMemento(next);
+
+
+    }
 }

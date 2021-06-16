@@ -18,10 +18,12 @@ public class FimJogo extends VBox {
         criaVista();
         registaListeners();
         registaObservers();
+        atualiza();
     }
 
     private void registaObservers() {
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_PLAYPIECE,evt -> atualiza());
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.REPLAY,evt -> atualiza());
     }
 
     private void atualiza() {
