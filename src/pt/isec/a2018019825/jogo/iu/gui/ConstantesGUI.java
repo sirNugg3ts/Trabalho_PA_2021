@@ -5,7 +5,7 @@ import java.beans.PropertyChangeEvent;
 public class ConstantesGUI {
 
 
-    public static final String REPLAY = "REPLAY" ;
+
 
     private ConstantesGUI(){}
 
@@ -21,6 +21,7 @@ public class ConstantesGUI {
     public static final String VOLTARATRAS = "VOLTARATRAS";
     public static final String COMECANOVOJOGO = "COMECANOVOJOGO";
     public static final String PROPRIEDADE_CARREGAJOGO = "CARREGAJOGO" ;
+    public static final String REPLAY = "REPLAY" ;
 
 
 

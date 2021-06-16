@@ -8,27 +8,23 @@ import javafx.scene.paint.Color;
 import pt.isec.a2018019825.jogo.logica.JogoObservavel;
 
 public class AguardaInicioPane extends VBox {
+    RadioButton humanoVShumano, humanoVSbot, botVSbot;
+    Button iniciarButton;
+    Label playerOneLabel, playerTwoLabel;
+    TextField playerOneName, playerTwoName;
+    private JogoObservavel jogoObservavel;
     private HBox buttonsBar;
     private HBox namesBar;
-    private JogoObservavel jogoObservavel;
-
     private ToggleGroup radioGroup;
-    RadioButton humanoVShumano,humanoVSbot,botVSbot;
-    Button iniciarButton;
 
-    Label playerOneLabel,playerTwoLabel;
-    TextField playerOneName,playerTwoName;
-
-
-
-    public AguardaInicioPane(JogoObservavel jogoObservavel){
+    public AguardaInicioPane(JogoObservavel jogoObservavel) {
         this.jogoObservavel = jogoObservavel;
         criarVista();
         RegistaListeners();
     }
 
     private void criarVista() {
-        HBox playerOneBox,playerTwoBox;
+        HBox playerOneBox, playerTwoBox;
 
         buttonsBar = new HBox();
         namesBar = new HBox();
@@ -45,15 +41,12 @@ public class AguardaInicioPane extends VBox {
         playerOneBox = new HBox();
         playerTwoBox = new HBox();
 
-
-
-        radioGroup.getToggles().addAll(humanoVShumano,humanoVSbot,botVSbot);
-        buttonsBar.getChildren().addAll(humanoVShumano,humanoVSbot,botVSbot);
-        playerOneBox.getChildren().addAll(playerOneLabel,playerOneName);
-        playerTwoBox.getChildren().addAll(playerTwoLabel,playerTwoName);
-        namesBar.getChildren().addAll(playerOneBox,playerTwoBox);
-        this.getChildren().addAll(namesBar,buttonsBar,iniciarButton);
-
+        radioGroup.getToggles().addAll(humanoVShumano, humanoVSbot, botVSbot);
+        buttonsBar.getChildren().addAll(humanoVShumano, humanoVSbot, botVSbot);
+        playerOneBox.getChildren().addAll(playerOneLabel, playerOneName);
+        playerTwoBox.getChildren().addAll(playerTwoLabel, playerTwoName);
+        namesBar.getChildren().addAll(playerOneBox, playerTwoBox);
+        this.getChildren().addAll(namesBar, buttonsBar, iniciarButton);
 
         iniciarButton.setDisable(true);
         playerOneName.setEditable(false);
@@ -61,13 +54,8 @@ public class AguardaInicioPane extends VBox {
         playerTwoName.setEditable(false);
         playerTwoName.setDisable(true);
 
-
-
         playerOneName.setText("Player One");
         playerTwoName.setText("Player Two");
-
-
-
 
         playerOneLabel.setAlignment(Pos.CENTER);
         playerTwoLabel.setAlignment(Pos.CENTER);
@@ -81,16 +69,10 @@ public class AguardaInicioPane extends VBox {
         buttonsBar.setAlignment(Pos.CENTER);
         namesBar.setAlignment(Pos.CENTER);
 
-
-
         this.setAlignment(Pos.CENTER);
-        this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,null,new BorderWidths(2))));
+        this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, new BorderWidths(2))));
         this.setPadding(new Insets(10));
-
-
-
     }
-
 
     private void RegistaListeners() {
         humanoVShumano.setOnAction((e) -> {
@@ -112,7 +94,7 @@ public class AguardaInicioPane extends VBox {
             playerTwoName.setText("Bot1");
         });
 
-        botVSbot.setOnAction((e)->{
+        botVSbot.setOnAction((e) -> {
             iniciarButton.setDisable(false);
             playerTwoName.setEditable(false);
             playerTwoName.setDisable(true);
@@ -124,15 +106,11 @@ public class AguardaInicioPane extends VBox {
 
         iniciarButton.setOnAction((e) -> {
             if (humanoVSbot.isSelected())
-                jogoObservavel.comeca(playerOneName.getText(),"");
+                jogoObservavel.comeca(playerOneName.getText(), "");
             else if (botVSbot.isSelected())
-                jogoObservavel.comeca("","");
+                jogoObservavel.comeca("", "");
             else
-                jogoObservavel.comeca(playerOneName.getText(),playerTwoName.getText());
+                jogoObservavel.comeca(playerOneName.getText(), playerTwoName.getText());
         });
-
-
     }
-
-
 }

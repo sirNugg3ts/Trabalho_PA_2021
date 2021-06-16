@@ -16,7 +16,7 @@ import java.util.List;
 public class AguardaJogador extends HBox {
 
     boolean mode;        //false -> peca dourada
-                        //true -> peca normal
+                         //true -> peca normal
 
     JogoObservavel jogoObservavel;
 
@@ -24,103 +24,18 @@ public class AguardaJogador extends HBox {
 
     HBox botoesNormais;
 
-    Button JogarPecaNormal,JogarPecaDourada,VoltarAtras;
+    Button JogarPecaNormal, JogarPecaDourada, VoltarAtras;
     ButtonsColunas buttoesColunas;
     Button next;
 
     Pane voltarAtrasPane;
 
-
-    public AguardaJogador(JogoObservavel jogoObservavel){
+    public AguardaJogador(JogoObservavel jogoObservavel) {
         this.jogoObservavel = jogoObservavel;
-
         criaComponentes();
         registaListeners();
         registaObservers();
         atualiza();
-    }
-
-    private void atualiza() {
-        if (jogoObservavel.getIntPecasDouradas() == 0){
-            JogarPecaDourada.setDisable(true);
-        }else
-            JogarPecaDourada.setDisable(false);
-
-
-        stack.getChildren().clear();
-
-        if (jogoObservavel.isNextPlayerBot())
-            botoesNormais = new HBox(next);
-        else
-            botoesNormais = new HBox(JogarPecaNormal,JogarPecaDourada,VoltarAtras);
-
-
-        stack.getChildren().addAll(botoesNormais,buttoesColunas,voltarAtrasPane);
-        botoesNormais.setVisible(true);
-        buttoesColunas.setVisible(false);
-        voltarAtrasPane.setVisible(false);
-
-    }
-
-    private void botTime() {
-        if (jogoObservavel.isNextPlayerBot()){
-            try {
-                jogoObservavel.playBot();
-            } catch (Exception e) {
-                Alert alerta = new Alert(Alert.AlertType.ERROR);
-                alerta.setHeaderText("Erro!");
-                alerta.setContentText(e.getMessage());
-                alerta.showAndWait();
-            }
-        }
-    }
-
-    private void registaObservers() {
-        jogoObservavel.addPropertyChangeListener(ConstantesGUI.CANCELA_JOGADA,evt -> {
-            buttoesColunas.setVisible(false);
-            botoesNormais.setVisible(true);
-            voltarAtrasPane.setVisible(false);
-            atualiza();
-        });
-
-        jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_PLAYPIECE,evt -> {
-            buttoesColunas.setVisible(false);
-            botoesNormais.setVisible(true);
-            voltarAtrasPane.setVisible(false);
-            atualiza();
-        });
-
-        jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_ENDMINIGAME,evt -> atualiza());
-        jogoObservavel.addPropertyChangeListener(ConstantesGUI.RESPONDEMINIGAME,evt -> {
-            if ((int)evt.getNewValue() == -1){
-                atualiza();
-            }
-        });
-
-        jogoObservavel.addPropertyChangeListener(ConstantesGUI.CANCELA_VOLTARATRAS,evt -> {
-            buttoesColunas.setVisible(false);
-            botoesNormais.setVisible(true);
-            voltarAtrasPane.setVisible(false);
-        });
-        jogoObservavel.addPropertyChangeListener(ConstantesGUI.VOLTARATRAS,evt -> {
-            buttoesColunas.setVisible(false);
-            botoesNormais.setVisible(true);
-            voltarAtrasPane.setVisible(false);
-            atualiza();
-        });
-        jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_CARREGAJOGO,evt -> {
-            buttoesColunas.setVisible(false);
-            botoesNormais.setVisible(true);
-            voltarAtrasPane.setVisible(false);
-            atualiza();
-        });
-    }
-
-    private void registaListeners() {
-        JogarPecaNormal.setOnAction((e) -> {botoesNormais.setVisible(false);buttoesColunas.setVisible(true);mode = true;});
-        JogarPecaDourada.setOnAction((e)->{botoesNormais.setVisible(false);buttoesColunas.setVisible(true);mode = false;});
-        VoltarAtras.setOnAction(actionEvent -> {botoesNormais.setVisible(false);buttoesColunas.setVisible(false);voltarAtrasPane.setVisible(true);});
-        next.setOnAction(actionEvent -> botTime());
     }
 
     private void criaComponentes() {
@@ -136,24 +51,125 @@ public class AguardaJogador extends HBox {
         if (jogoObservavel.isNextPlayerBot())
             botoesNormais = new HBox(next);
         else
-            botoesNormais = new HBox(JogarPecaNormal,JogarPecaDourada,VoltarAtras);
+            botoesNormais = new HBox(JogarPecaNormal, JogarPecaDourada, VoltarAtras);
 
 
-        stack.getChildren().addAll(botoesNormais,buttoesColunas,voltarAtrasPane);
+        stack.getChildren().addAll(botoesNormais, buttoesColunas, voltarAtrasPane);
+        getChildren().addAll(stack);
+
         botoesNormais.setVisible(true);
         buttoesColunas.setVisible(false);
         voltarAtrasPane.setVisible(false);
 
-        getChildren().addAll(stack);
+
         setAlignment(Pos.CENTER);
     }
 
-    class ButtonsColunas extends HBox{
+    private void atualiza() {
+        JogarPecaDourada.setDisable(jogoObservavel.getIntPecasDouradas() == 0);
+
+        stack.getChildren().clear();
+
+        if (jogoObservavel.isNextPlayerBot())
+            botoesNormais = new HBox(next);
+        else
+            botoesNormais = new HBox(JogarPecaNormal, JogarPecaDourada, VoltarAtras);
+
+
+        stack.getChildren().addAll(botoesNormais, buttoesColunas, voltarAtrasPane);
+
+        botoesNormais.setVisible(true);
+        buttoesColunas.setVisible(false);
+        voltarAtrasPane.setVisible(false);
+
+    }
+
+    private void botTime() {
+        if (jogoObservavel.isNextPlayerBot()) {
+            try {
+                jogoObservavel.playBot();
+            } catch (Exception e) {
+                Alert alerta = new Alert(Alert.AlertType.ERROR);
+                alerta.setHeaderText("Erro!");
+                alerta.setContentText(e.getMessage());
+                alerta.showAndWait();
+            }
+        }
+    }
+
+    private void registaObservers() {
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.CANCELA_JOGADA, evt -> {
+            buttoesColunas.setVisible(false);
+            botoesNormais.setVisible(true);
+            voltarAtrasPane.setVisible(false);
+            atualiza();
+        });
+
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_PLAYPIECE, evt -> {
+            buttoesColunas.setVisible(false);
+            botoesNormais.setVisible(true);
+            voltarAtrasPane.setVisible(false);
+            atualiza();
+        });
+
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_ENDMINIGAME, evt -> atualiza());
+
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.RESPONDEMINIGAME, evt -> {
+            if ((int) evt.getNewValue() == -1) {
+                atualiza();
+            }
+        });
+
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.CANCELA_VOLTARATRAS, evt -> {
+            buttoesColunas.setVisible(false);
+            botoesNormais.setVisible(true);
+            voltarAtrasPane.setVisible(false);
+        });
+
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.VOLTARATRAS, evt -> {
+            buttoesColunas.setVisible(false);
+            botoesNormais.setVisible(true);
+            voltarAtrasPane.setVisible(false);
+            atualiza();
+        });
+
+        jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_CARREGAJOGO, evt -> {
+            buttoesColunas.setVisible(false);
+            botoesNormais.setVisible(true);
+            voltarAtrasPane.setVisible(false);
+            atualiza();
+        });
+    }
+
+    private void registaListeners() {
+        JogarPecaNormal.setOnAction((e) -> {
+            botoesNormais.setVisible(false);
+            buttoesColunas.setVisible(true);
+            mode = true;
+        });
+
+        JogarPecaDourada.setOnAction((e) -> {
+            botoesNormais.setVisible(false);
+            buttoesColunas.setVisible(true);
+            mode = false;
+        });
+
+        VoltarAtras.setOnAction(actionEvent -> {
+            botoesNormais.setVisible(false);
+            buttoesColunas.setVisible(false);
+            voltarAtrasPane.setVisible(true);
+        });
+
+        next.setOnAction(actionEvent -> botTime());
+    }
+
+
+    class ButtonsColunas extends HBox {
         JogoObservavel jogoObservavel;
         List<Button> butoesColunas;
         Button cancelar;
 
-        public ButtonsColunas(JogoObservavel jogoObservavel){
+        public ButtonsColunas(JogoObservavel jogoObservavel) {
             this.jogoObservavel = jogoObservavel;
             criaVista();
             registaListeners();
@@ -167,9 +183,9 @@ public class AguardaJogador extends HBox {
         }
 
         private void registaListeners() {
-            for(Button b : butoesColunas){
+            for (Button b : butoesColunas) {
                 b.setOnAction(actionEvent -> {
-                    if (mode){
+                    if (mode) {
                         try {
                             jogoObservavel.jogaPeca(butoesColunas.indexOf(b));
                         } catch (Exception e) {
@@ -178,7 +194,7 @@ public class AguardaJogador extends HBox {
                             alerta.setContentText(e.getMessage());
                             alerta.showAndWait();
                         }
-                    }else{
+                    } else {
                         try {
                             jogoObservavel.jogaPecaDourada(butoesColunas.indexOf(b));
                         } catch (Exception e) {
@@ -197,7 +213,7 @@ public class AguardaJogador extends HBox {
 
         private void criaVista() {
             butoesColunas = new ArrayList<>();
-            for (int i = 0;i < 7;i++){
+            for (int i = 0; i < 7; i++) {
                 butoesColunas.add(new Button(Integer.toString(i)));
                 getChildren().add(butoesColunas.get(i));
             }

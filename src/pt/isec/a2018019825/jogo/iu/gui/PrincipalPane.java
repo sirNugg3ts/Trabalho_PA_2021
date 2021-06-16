@@ -1,6 +1,5 @@
 package pt.isec.a2018019825.jogo.iu.gui;
 
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -14,7 +13,7 @@ import pt.isec.a2018019825.jogo.logica.Situacao;
 import static pt.isec.a2018019825.jogo.iu.gui.ConstantesGUI.*;
 
 public class PrincipalPane extends BorderPane {
-    private JogoObservavel jogoObservavel;
+    private final JogoObservavel jogoObservavel;
 
     private Connect4Grid tabuleiro;
     Label nomeJogadorAtual;

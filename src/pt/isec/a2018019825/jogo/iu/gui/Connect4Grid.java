@@ -13,9 +13,9 @@ public class Connect4Grid extends GridPane {
     private static final int COLUMNS = 7;
     private static final int ROWS = 6;
 
-    private Disc[][] grid = new Disc[COLUMNS][ROWS];
+    private final Disc[][] grid = new Disc[COLUMNS][ROWS];
 
-    private JogoObservavel jogoObservavel;
+    private final JogoObservavel jogoObservavel;
 
     public Connect4Grid(JogoObservavel jogoObservavel){
         this.jogoObservavel = jogoObservavel;

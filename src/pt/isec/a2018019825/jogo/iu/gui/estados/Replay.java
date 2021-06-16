@@ -1,12 +1,10 @@
 package pt.isec.a2018019825.jogo.iu.gui.estados;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import pt.isec.a2018019825.jogo.logica.JogoObservavel;
-
-import java.io.IOException;
-
 
 public class Replay extends HBox {
     JogoObservavel jogoObservavel;
@@ -23,10 +21,11 @@ public class Replay extends HBox {
         next.setOnAction(actionEvent -> {
             try {
                 jogoObservavel.replay();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Alert alerta = new Alert(Alert.AlertType.ERROR);
+                alerta.setHeaderText("Erro!");
+                alerta.setContentText(e.getMessage());
+                alerta.showAndWait();
             }
         });
     }

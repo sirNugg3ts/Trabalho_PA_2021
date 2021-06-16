@@ -23,7 +23,6 @@ public class FimJogo extends VBox {
 
     private void registaObservers() {
         jogoObservavel.addPropertyChangeListener(ConstantesGUI.PROPRIEDADE_PLAYPIECE,evt -> atualiza());
-        jogoObservavel.addPropertyChangeListener(ConstantesGUI.REPLAY,evt -> atualiza());
     }
 
     private void atualiza() {
@@ -36,13 +35,11 @@ public class FimJogo extends VBox {
 
     private void criaVista() {
         info = new Label();
-
-       novoJogo = new Button("Novo Jogo");
-       sair = new Button("Sair");
+        novoJogo = new Button("Novo Jogo");
+        sair = new Button("Sair");
 
         HBox butoes = new HBox(novoJogo,sair);
         getChildren().addAll(info,butoes);
-
     }
 
     private void registaListeners() {
