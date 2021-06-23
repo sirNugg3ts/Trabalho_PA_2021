@@ -37,12 +37,13 @@ public class Connect4IU_Grafico extends BorderPane {
 
     MenuItem PrideMode;
 
-    public Connect4IU_Grafico(){
+    public Connect4IU_Grafico(JogoObservavel jogo){
+        jogoObservavel = jogo;
         comeca();
     }
 
     private void comeca(){
-        jogoObservavel = new JogoObservavel(new MaquinaEstados());
+        //jogoObservavel = new JogoObservavel(new MaquinaEstados());
         CSSManager.setCSS(this,"style.css");
         criaComponentes();
         disporVista();
